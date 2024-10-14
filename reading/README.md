@@ -20,6 +20,7 @@ Model validation
 - Kriegler et al. (2015) Diagnostic indicators for integrated assessment models of climate policy. Technological Forecasting and Social Change 90, pp 45-61, [doi:10.1016/j.techfore.2013.09.020](https://doi.org/10.1016/j.techfore.2013.09.020).
 - Wilson et al. (2021) Evaluating process-based Integrated Assessment Models of climate change mitigation. Climatic Change, 166(1-2), 3, [doi:10.1007/s10584-021-03099-9](https://doi.org/10.1007/s10584-021-03099-9).
 - Harmsen et al. (2021) Integrated assessment model diagnostics: Key indicators and model evolution, Environmental Research Letters, 16(5), 054046, [doi:10.1088/1748-9326/abf964](https://doi.org/10.1088/1748-9326/abf964)
+- Dekker et al. (2023) 
 
 Technology assessment
 ---------------------
@@ -45,6 +46,7 @@ Transport sector modeling
 - Yeh et al. (2017) Detailed assessment of global transport-energy models’ structures and projections. Transportation Research Part D: Transport and Environment 55, pp 294-309 .[doi:10.1016/j.trd.2016.11.001](https://doi.org/10.1016/j.trd.2016.11.001)
 - van Vuuren et al. (2017) A special issue on model-based long-term transport scenarios: Model comparison and new methodological developments to improve energy and climate policy analysis. Transportation Research Part D: Transport and Environment 55, pp 277-280. [doi:10.1016/j.trd.2017.05.003](https://doi.org/10.1016/j.trd.2017.05.003)
 - International Transport Energy Modeling (iTEM) consortium [website](https://transportenergy.org/)
+- Kramel et al. (2024) Maritime sector transition pathways towards net-zero within global energy scenarios, Preprint [doi:10.21203/rs.3.rs-4471628/v1](https://doi.org/10.21203/rs.3.rs-4471628/v1)
 
 Land use, forestry and agriculture
 ----------------------------------
@@ -60,6 +62,7 @@ Industrial ecology integration
 - Fricko et al. (2016) Energy sector water use implications of a 2C climate policy. Environmental Research Letters 11 034011, [doi:10.1088/1748-9326/11/3/034011](https://doi.org/10.1088/1748-9326/11/3/034011).
 - Arvesen et al. (2018) Deriving life cycle assessment coefficients for application in integrated assessment modelling. Environmental Modelling & Software 99, pp 111-125, [doi:10.1016/j.envsoft.2017.09.010](https://doi.org/10.1016/j.envsoft.2017.09.010)
 - Pehl et al. (2018) Understanding future emissions from low-carbon power systems by integration of life-cycle assessment and integrated energy modelling. Nature Energy 2, pp 939–945, [doi:10.1038/s41560-017-0032-9](https://doi.org/10.1038/s41560-017-0032-9)
+- Ünlü et al. (2024) MESSAGEix-Materials v1.0.0: Representation of Material Flows and Stocks in an Integrated Assessment Model. Geoscientific Model Development, Preprint [doi:10.5194/egusphere-2023-3035](https://doi.org/10.5194/egusphere-2023-3035). 
 
 Uncertainty analysis using IAMs
 -------------------------------

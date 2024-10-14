@@ -1,6 +1,11 @@
 Resources
 =========
 
+GAMS
+----
+- [GAMS documentation](https://gams.com/latest/docs/)
+- [GAMS teaching license file](distributed via shared drive)
+
 MESSAGEix
 ---------
 - [Documentation of the MESSAGEix framework](https://docs.messageix.org/)
@@ -14,9 +19,11 @@ Policies
 
 Scenario data
 -------------
-- [SSP scenario database](https://tntcat.iiasa.ac.at/SspDb/)
-- [IAMC SR1.5 Scenario Explorer](https://data.ece.iiasa.ac.at/iamc-1.5c-explorer/)
-- [ENGAGE Scenario Explorer](https://data.ece.iiasa.ac.at/engage/)
+- [SSP database (2014-2018)](https://tntcat.iiasa.ac.at/SspDb/)
+- [SSP basic element update (2023-2024)](https://data.ece.iiasa.ac.at/ssp/)
+- [SSP Extensions Explorer](https://ssp-extensions.apps.ece.iiasa.ac.at/)
+- [IPCC SR1.5 Scenario Explorer](https://data.ece.iiasa.ac.at/iamc-1.5c-explorer/)
+- [IPCC AR6 Scenario Explorer](https://data.ece.iiasa.ac.at/ar6/)
 
 Model data
 ----------
@@ -26,9 +33,9 @@ Model data
   - [Supplementary data - water coefficients](https://iopscience.iop.org/1748-9326/11/3/034011/media/erl034011_suppdata.xlsx)
 - Krey et al. (2018) Looking under the hood: A comparison of techno-economic assumptions across national and global integrated assessment models, Energy 172, pp 1254-1267, [doi:10.1016/j.energy.2018.12.131](https:doi.org/10.1016/j.energy.2018.12.131).
   - [Appendix C: techno-economic assumptions](https://ars.els-cdn.com/content/image/1-s2.0-S0360544218325039-mmc3.xlsx)
-- International Energy Agency (IEA): World Energy Model - Techno-economic inputs ([IEA 2021](https://www.iea.org/reports/world-energy-model/techno-economic-inputs))
 - World Resources Institute (WRI): Global Power Plant Database V1.3.0, June 2021 ([WRI 2019](http://datasets.wri.org/dataset/globalpowerplantdatabase))
-- International Energy Agency (IEA): Energy Balances for 2015 for selected countries from 2017 revision (distributed by e-mail on request)
+- International Energy Agency (IEA): Extended Energy Balances until 2022 from 2014 revision (distributed via shared drive)
+- International Energy Agency (IEA): World Energy Outlook 2023. [Power generation technology costs and assumptions](https://www.iea.org/data-and-statistics/data-product/world-energy-outlook-2023-free-dataset-2#data-files)
 - US Geological Survey: World Assessment of Undiscovered Oil and Gas Resources 2012 ([USGS 2012](https://pubs.usgs.gov/dds/dds-069/dds-069-ff/))
 - Federal Institute for Geosciences and Natural Resources (BGR): BGR Energy Study 2019. Data and Developments Concerning German and Global Energy Supplies ([BGR 2019](https://www.bgr.bund.de/EN/Themen/Energie/Produkte/energy_study_2019_summary_en.html))
 - World Energy Council: World Energy Resources Survey 2013 ([WEC2013](https://www.worldenergy.org/assets/images/imported/2013/09/Complete_WER_2013_Survey.pdf))
