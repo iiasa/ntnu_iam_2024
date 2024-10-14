@@ -1,4 +1,4 @@
-*.log
+*.log*
 *.lst
 *.lxi
 *.gsp

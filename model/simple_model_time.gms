@@ -24,7 +24,7 @@ TABLE
                         2020    2030
         coal_ppl        1.5     1.5
         gas_ppl         1       1
-        wind_ppl        0       0
+        wind_ppl        0.5     0.5
 ;
 Equations
         EQ_COST
@@ -42,7 +42,7 @@ EQ_TOTAL_EMISSION.. Sum(year, EMISS_ANNUAL(year)) =E= TOTAL_EMISS;
 
 Model simple_model / all / ;
 X.LO(technology, year) = 0;
-TOTAL_EMISS.UP = 10026;
-TOTAL_COST.UP = 5050;
+TOTAL_EMISS.UP = 200;
+*TOTAL_COST.UP = 5050;
 
 Solve simple_model minimize TOTAL_COST using LP;
