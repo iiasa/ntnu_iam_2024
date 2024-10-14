@@ -1,2 +1,7 @@
 
-model/simple_model.lst
+*.~gm
+*.lst
+*.log
+*.lxi
+*.gsp
+*.gpr
