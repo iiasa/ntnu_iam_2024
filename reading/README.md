@@ -20,7 +20,7 @@ Model validation
 - Kriegler et al. (2015) Diagnostic indicators for integrated assessment models of climate policy. Technological Forecasting and Social Change 90, pp 45-61, [doi:10.1016/j.techfore.2013.09.020](https://doi.org/10.1016/j.techfore.2013.09.020).
 - Wilson et al. (2021) Evaluating process-based Integrated Assessment Models of climate change mitigation. Climatic Change, 166(1-2), 3, [doi:10.1007/s10584-021-03099-9](https://doi.org/10.1007/s10584-021-03099-9).
 - Harmsen et al. (2021) Integrated assessment model diagnostics: Key indicators and model evolution, Environmental Research Letters, 16(5), 054046, [doi:10.1088/1748-9326/abf964](https://doi.org/10.1088/1748-9326/abf964)
-- Dekker et al. (2023) 
+- Dekker et al. (2023) Identifying energy model fingerprints in mitigation scenarios. Nature Energy 8, pages 1395–1404. [doi:10.1038/s41560-023-01399-1](https://doi.org/10.1038/s41560-023-01399-1).
 
 Technology assessment
 ---------------------
