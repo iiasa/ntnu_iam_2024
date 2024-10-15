@@ -1,3 +1,10 @@
+
+*.~gm
+*.lst
+*.log
+*.lxi
+*.gsp
+*.gpr
 *.log*
 *.lst
 *.lxi
