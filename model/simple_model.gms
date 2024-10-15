@@ -19,6 +19,9 @@ Variables
 
 Parameters
           demand(year)  total energy demand per hour / 2020 100, 2030 120 /
+          discount_rate  / 0.05 /
+          plength  / 10 /
+          cost_capacity(technology, year)
 ;
 
 Table
@@ -61,6 +64,19 @@ Table
           wind_ppl       2000    2000
 ;
 
+Table
+          lifetime(technology, year) 'full load hours per year'
+                         2020    2030
+          coal_ppl         30      30
+          gas_ppl          30      30
+          wind_ppl         30      30
+;
+
+cost_capacity(technology, year) = inv(technology, year) * ((1 + discount_rate)**lifetime(technology, year) * discount_rate) /
+                                                          ((1 + discount_rate)**lifetime(technology, year) - 1)
+                                + fom(technology, year) ;
+
+
 
 Equations
          EQ_COST_ANNUAL(year)
@@ -72,13 +88,12 @@ Equations
 
 
 EQ_COST_ANNUAL(year)..    Sum(technology, ACT(technology, year) * vom(technology, year)
-                                        + CAP_NEW(technology, year) * inv(technology, year)
-                                        + Sum(vintage $ (ORD(vintage) le ORD(year)), CAP_NEW(technology, vintage) * fom(technology, vintage)))
+                                        + Sum(vintage $ ((ORD(vintage) le ORD(year)) AND ((ORD(year) - ORD(vintage) + 1) * plength le lifetime(technology, vintage))), CAP_NEW(technology, vintage) * cost_capacity(technology, vintage)))
                           =E= COST_ANNUAL(year) ;
-EQ_COST..                 Sum(year, COST_ANNUAL(year)) =E= TOTAL_COST ;
+EQ_COST..                 Sum(year, COST_ANNUAL(year) * plength * (1 - discount_rate)**(plength * (ORD(year) - 1))) =E= TOTAL_COST ;
 EQ_ENERGY_BALANCE(year).. Sum(technology, ACT(technology, year)) =G= demand(year) ;
 EQ_EMISSION(year)..       Sum(technology, ACT(technology, year) * emission_intensity(technology, year)) =E= EMISS(year) ;
-EQ_CAPACITY_BALANCE(technology, year)..  ACT(technology, year) =L= Sum(vintage $ (ORD(vintage) le ORD(year)), CAP_NEW(technology, vintage)) * hours(technology, year) ;
+EQ_CAPACITY_BALANCE(technology, year)..  ACT(technology, year) =L= Sum(vintage $ ((ORD(vintage) le ORD(year)) AND ((ORD(year) - ORD(vintage) + 1) * plength le lifetime(technology, vintage))), CAP_NEW(technology, vintage)) * hours(technology, year) ;
 
 DISPLAY vintage ;
 
