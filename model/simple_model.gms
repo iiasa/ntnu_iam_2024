@@ -15,6 +15,7 @@ Variables
          COST_ANNUAL(year)       costs per year
          TOTAL_COST              total energy system costs
          EMISS(year)             total CO2 emissions
+         CUM_EMISS               cumulative CO2 emissions
 ;
 
 Parameters
@@ -109,6 +110,7 @@ Equations
          EQ_COST
          EQ_ENERGY_BALANCE(year)
          EQ_EMISSION(year)
+         EQ_EMISSION_CUMULATIVE
          EQ_CAPACITY_BALANCE(technology, year)
          EQ_CAPACITY_DIFFUSION(technology, year)
 ;
@@ -120,6 +122,7 @@ EQ_COST_ANNUAL(year)..    Sum(technology, ACT(technology, year) * vom(technology
 EQ_COST..                 Sum(year, COST_ANNUAL(year) * plength * (1 - discount_rate)**(plength * (ORD(year) - 1))) =E= TOTAL_COST ;
 EQ_ENERGY_BALANCE(year).. Sum(technology, ACT(technology, year)) =G= demand(year) ;
 EQ_EMISSION(year)..       Sum(technology, ACT(technology, year) * emission_intensity(technology, year)) =E= EMISS(year) ;
+EQ_EMISSION_CUMULATIVE..  Sum(year, EMISS(year) * plength) =E= CUM_EMISS ;
 EQ_CAPACITY_BALANCE(technology, year)..  ACT(technology, year) =L= Sum(vintage $ ((ORD(vintage) le ORD(year)) AND ((ORD(year) - ORD(vintage) + 1) * plength le lifetime(technology, vintage))), CAP_NEW(technology, vintage)) * hours(technology, year) ;
 EQ_CAPACITY_DIFFUSION(technology, year)$(ORD(year) > 1)..
                          CAP_NEW(technology, year) =L= CAP_NEW(technology, year-1) * (1 + diffusion(technology))**plength + startup(technology) ;
@@ -131,7 +134,9 @@ Model simple_model / all / ;
 
 ACT.LO(technology, year) = 0 ;
 CAP_NEW.LO(technology, year) = 0 ;
-EMISS.UP('2030') = 0 ;
+*CAP_NEW.FX('coal_ppl', '2020') = 0.009 ;
+*EMISS.UP('2030') = 0 ;
+*CUM_EMISS.UP = 1.8612E+6 / 2 ;
 *TOTAL_COST.UP = 2050 ;
 
 
