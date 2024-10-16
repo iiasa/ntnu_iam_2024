@@ -2,6 +2,9 @@
 Sets
          technology 'set, of technologies' / coal_ppl, gas_ppl, wind_ppl /
          year       / 2020, 2030 /
+         share      'technology share set' / coal_power /
+         tec_share(share, technology)    'technology share left hand side'   / coal_power.coal_ppl /
+         tec_share_rhs(share, technology)  'technology share right hand side'    / coal_power.coal_ppl, coal_power.gas_ppl, coal_power.wind_ppl /
 *         vintage(year)
 ;
 
@@ -23,6 +26,8 @@ Parameters
           discount_rate  / 0.05 /
           plength  / 10 /
           cost_capacity(technology, year)
+          share_up(share)  / coal_power 0.4 /
+          share_lo(share)
 ;
 
 Table
@@ -113,6 +118,8 @@ Equations
          EQ_EMISSION_CUMULATIVE
          EQ_CAPACITY_BALANCE(technology, year)
          EQ_CAPACITY_DIFFUSION(technology, year)
+         EQ_SHARE_UP(share, year)
+*         EQ_SHARE_LO(share, year)
 ;
 
 
@@ -126,6 +133,10 @@ EQ_EMISSION_CUMULATIVE..  Sum(year, EMISS(year) * plength) =E= CUM_EMISS ;
 EQ_CAPACITY_BALANCE(technology, year)..  ACT(technology, year) =L= Sum(vintage $ ((ORD(vintage) le ORD(year)) AND ((ORD(year) - ORD(vintage) + 1) * plength le lifetime(technology, vintage))), CAP_NEW(technology, vintage)) * hours(technology, year) ;
 EQ_CAPACITY_DIFFUSION(technology, year)$(ORD(year) > 1)..
                          CAP_NEW(technology, year) =L= CAP_NEW(technology, year-1) * (1 + diffusion(technology))**plength + startup(technology) ;
+EQ_SHARE_UP(share, year)$(share_up(share))..
+                          Sum(technology$tec_share(share, technology), ACT(technology, year)) =L= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year)) * share_up(share) ;
+*EQ_SHARE_LO(share, year)$(share_lo(share))..
+*                          Sum(technology$tec_share(share, technology), ACT(technology, year)) =G= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year)) * share_lo(share) ;
 
 
 DISPLAY vintage ;
