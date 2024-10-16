@@ -1,6 +1,9 @@
 Sets
         technology / coal_ppl, gas_ppl, wind_ppl /
         year / 2020, 2030/
+        share 'technology share set' /coal_power/
+        tech_share(share, technology) 'technology share substes' /coal_power.coal_ppl/
+        tech_share_rhs(share, technology) 'reference frame for the share' /coal_power.coal_ppl, coal_power.gas_ppl, coal_power.wind_ppl/
 *        vintage(year)
         ;
 *vintage(year) = YES;
@@ -18,6 +21,8 @@ Parameter
         cost_capacity(technology, year)
         discount_rate / 0.05/
         plength /10/
+        share_up(share) /coal_power 0.4/
+        share_low(share) /coal_power 0.2/
         ;
 TABLE
         inv(technology, year) '$/[kw]'
@@ -81,6 +86,8 @@ Equations
         EQ_TOTAL_EMISSION
         EQ_CAPACITY_BALANCE
         EQ_CAPACITY_DIFFUSION(year, technology)
+        EQ_SHARE_UP(share,year)
+        EQ_SHARE_LOW(share, year)
         ;
 
 cost_capacity(technology, year) = inv(technology, year)*((1+discount_rate)**lifetime(technology,year)*discount_rate)
@@ -98,13 +105,18 @@ EQ_TOTAL_EMISSION.. Sum(year, EMISS_ANNUAL(year)*plength) =E= TOTAL_EMISS;
 EQ_CAPACITY_BALANCE(technology, year).. ACT(technology, year) =L= Sum(vintage $ (ORD(vintage)le ORD(year) AND(ORD(year)-ORD(vintage)+1)*plength le lifetime(technology, vintage)),
                                                                         CAP_NEW(technology, vintage)* hours(technology, year));
 EQ_CAPACITY_DIFFUSION(year, technology)$(ORD(year)>1).. CAP_NEW(technology, year) =L= CAP_NEW(technology, year-1) * ((1 + diffusion(technology))**plength) + startup(technology); 
+EQ_SHARE_UP(share, year)..
+                        Sum(technology$tech_share(share, technology), ACT(technology,year)) =L= Sum(technology$tech_share_rhs(share, technology), ACT(technology, year))*share_up(share);
+EQ_SHARE_LOW(share, year)..
+                        Sum(technology$tech_share(share, technology), ACT(technology,year)) =G= Sum(technology$tech_share_rhs(share, technology), ACT(technology, year))*share_low(share);
+
 
 Model simple_model / all / ;
 ACT.LO(technology, year) = 0;
 CAP_NEW.LO(technology, vintage) = 0;
-CAP_NEW.FX('coal_ppl', '2020') = 0.009;
-TOTAL_EMISS.UP = 1861200/2;
-EMISS_ANNUAL.UP('2030') = 0;
+*CAP_NEW.FX('coal_ppl', '2020') = 0.009;
+*TOTAL_EMISS.UP = 1861200/2;
+*EMISS_ANNUAL.UP('2030') = 0;
 *TOTAL_COST.UP = 5050;
 
 Solve simple_model minimize TOTAL_COST using LP;
