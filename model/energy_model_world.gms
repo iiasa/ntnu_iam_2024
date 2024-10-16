@@ -81,7 +81,7 @@ SET technology          'technologies'
 
     tec_share(share, technology)      'technology share left hand side'
     / coal_nonelectric.coal_nele /
-    
+
     tec_share_rhs(share, technology)  'technology share right hand side'
     / coal_nonelectric.coal_nele
       coal_nonelectric.gas_nele
@@ -100,7 +100,7 @@ ALIAS (year, year_alias) ;
 PARAMETERS
     period_length
     / 10 /
-    
+
     input(technology, energy, level)         'input coefficients'
     / electricity_grid.electricity.secondary 1
       appliances.electricity.final           1
@@ -221,10 +221,10 @@ PARAMETERS
     beta                                     'income elasticity'
     / 0.7 /
 
-    share_up(share)                          'upper share of techology groups relative to reference group'  
+    share_up(share)                          'upper share of techology groups relative to reference group'
     / coal_nonelectric 0.4 /
 
-    share_lo(share)                          'lower share of techology groups relative to reference group'  
+    share_lo(share)                          'lower share of techology groups relative to reference group'
     / coal_nonelectric 0 /
 ;
 
@@ -360,6 +360,8 @@ EQUATIONS
     EQ_DIFFUSION_UP            'upper technology capacity diffusion constraint'
     EQ_COST_ANNUAL             'costs per year'
     EQ_COST                    'summation of total systems costs'
+    EQ_SHARE_UP(share, year)
+    EQ_SHARE_LO(share, year)
 ;
 
 * definition of equations
@@ -374,11 +376,17 @@ EQ_CAPACITY_BALANCE(technology, year) $ hours(technology)..
 EQ_EMISSION(year)..
     SUM(technology, ACT(technology, year) * CO2_emission(technology)) =E= EMISS(year) ;
 
-EQ_EMISSION_CUMULATIVE..  
+EQ_EMISSION_CUMULATIVE..
     SUM(year, EMISS(year) * period_length) =E= CUM_EMISS ;
 
 EQ_DIFFUSION_UP(technology, year) $ ((NOT ORD(year) = 1) AND diffusion_up(technology))..
     CAP_NEW(technology, year) =L= CAP_NEW(technology, year - 1) * (1 + diffusion_up(technology))**period_length + startup(technology) ;
+
+EQ_SHARE_UP(share, year)$(share_up(share))..
+                          SUM(technology$tec_share(share, technology), ACT(technology, year)) =L= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year)) * share_up(share) ;
+
+EQ_SHARE_LO(share, year)$(share_lo(share))..
+                          SUM(technology$tec_share(share, technology), ACT(technology, year)) =G= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year)) * share_lo(share) ;
 
 EQ_COST_ANNUAL(year)..
     SUM(technology, cost_activity(technology, year) * ACT(technology, year))
