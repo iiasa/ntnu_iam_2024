@@ -94,7 +94,7 @@ EQ_COST_ANNUAL(year)..   Sum(technology, ACT(technology, year)*vom(technology, y
 EQ_COST..   Sum(year, COST_ANNUAL(year)*plength*(1-discount_rate)**(plength*(ORD(year)-1))) =E= TOTAL_COST;
 EQ_ENERGY_BALANCE(year).. SUM(technology, ACT(technology, year)) =G= demand(year);
 EQ_EMISS_ANNUAL(year).. Sum(technology, ACT(technology, year)*emission_intensity(technology, year)) =E= EMISS_ANNUAL(year);
-EQ_TOTAL_EMISSION.. Sum(year, EMISS_ANNUAL(year)) =E= TOTAL_EMISS;
+EQ_TOTAL_EMISSION.. Sum(year, EMISS_ANNUAL(year)*plength) =E= TOTAL_EMISS;
 EQ_CAPACITY_BALANCE(technology, year).. ACT(technology, year) =L= Sum(vintage $ (ORD(vintage)le ORD(year) AND(ORD(year)-ORD(vintage)+1)*plength le lifetime(technology, vintage)),
                                                                         CAP_NEW(technology, vintage)* hours(technology, year));
 EQ_CAPACITY_DIFFUSION(year, technology)$(ORD(year)>1).. CAP_NEW(technology, year) =L= CAP_NEW(technology, year-1) * ((1 + diffusion(technology))**plength) + startup(technology); 
@@ -102,7 +102,9 @@ EQ_CAPACITY_DIFFUSION(year, technology)$(ORD(year)>1).. CAP_NEW(technology, year
 Model simple_model / all / ;
 ACT.LO(technology, year) = 0;
 CAP_NEW.LO(technology, vintage) = 0;
-TOTAL_EMISS.UP = 1;
+CAP_NEW.FX('coal_ppl', '2020') = 0.009;
+TOTAL_EMISS.UP = 1861200/2;
+EMISS_ANNUAL.UP('2030') = 0;
 *TOTAL_COST.UP = 5050;
 
 Solve simple_model minimize TOTAL_COST using LP;
