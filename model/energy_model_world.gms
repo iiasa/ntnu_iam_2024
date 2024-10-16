@@ -104,10 +104,10 @@ PARAMETERS
     input(technology, energy, level)         'input coefficients'
     / electricity_grid.electricity.secondary 1
       appliances.electricity.final           1
-      coal_ppl.coal.final                    2.5
-      gas_ppl.gas.final                      1.81
-      oil_ppl.oil.final                      2
-      bio_ppl.biomass.final                  3
+      coal_ppl.coal.final                    2.9
+      gas_ppl.gas.final                      2.3
+      oil_ppl.oil.final                      2.88
+      bio_ppl.biomass.final                  3.59
       nuclear_ppl.nuclear.primary            1
       hydro_ppl.hydro.primary                1
       wind_ppl.wind.primary                  1
@@ -120,7 +120,7 @@ PARAMETERS
     /
 
     output(technology, energy, level)        'output coefficients'
-    / electricity_grid.electricity.final     0.85
+    / electricity_grid.electricity.final     0.842
       appliances.electricity.useful          1
       coal_ppl.electricity.secondary         1
       gas_ppl.electricity.secondary          1
@@ -202,9 +202,9 @@ PARAMETERS
       bio_pot      1
     /
 
-    demand(energy, level)                    'demand in base year [TWh]'
-    / electricity.useful        100
-      nonelectric.useful        400 /
+    demand(energy, level)                    'demand in base year [PWh]'
+    / electricity.useful        22.60
+      nonelectric.useful        87.3 /
 
     gdp(year)                                'GDP [index]'
     / 2020  1
@@ -320,17 +320,17 @@ PARAMETER hours(technology)                  'full load hours'
 / ;
 
 PARAMETER cost(technology, year)                 'total technology costs on activity basis [$/MWh]'
-          cost_capacity(technology, year)        'annuity of capacity-related investment costs [$/MW]'
+          cost_capacity(technology, year)        'annuity of capacity-related investment costs [$/kW]'
           cost_activity(technology, year)        'activity-related technology costs [$/MWh]'
 ;
 
 cost_capacity(technology, year) =  ((inv(technology, year) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year))) * 1000 $ (lifetime(technology) > 0) ;
+                         + fom(technology, year))) $ (lifetime(technology) > 0) ;
 
 cost_activity(technology, year) =  vom(technology, year) ;
 
 cost(technology, year) =  ((inv(technology, year) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year)) / (hours(technology)/1000)) $ (lifetime(technology) > 0)
+                         + fom(technology, year)) / (hours(technology))) $ (lifetime(technology) > 0)
                          + vom(technology, year) ;
 
 DISPLAY cost, cost_capacity, cost_activity ;
@@ -388,10 +388,16 @@ EQ_SHARE_UP(share, year)$(share_up(share))..
 EQ_SHARE_LO(share, year)$(share_lo(share))..
                           SUM(technology$tec_share(share, technology), ACT(technology, year)) =G= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year)) * share_lo(share) ;
 
+EQ_COST_ANNUAL(year)..    SUM(technology, ACT(technology, year) * vom(technology, year)
+                                        + SUM(year_alias $ ((ORD(year_alias) le ORD(year)) AND ((ORD(year) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias) * cost_capacity(technology, year_alias)))
+                          =E= COST_ANNUAL(year) ;
+
+$ONTEXT
 EQ_COST_ANNUAL(year)..
     SUM(technology, cost_activity(technology, year) * ACT(technology, year))
   + SUM(technology, cost_capacity(technology, year) * CAP_NEW(technology, year) * SUM(year_alias $ ((ORD(year_alias) GE ORD(year)) AND ((ORD(year_alias) - ORD(year)) * period_length) LE lifetime(technology)), MIN((lifetime(technology) - (ORD(year_alias) - ORD(year)) * period_length), period_length)))
 =E= COST_ANNUAL(year) ;
+$OFFTEXT
 
 EQ_COST..
     SUM(year, COST_ANNUAL(year) * period_length * (1 - discount_rate)**(period_length * (ORD(year) - 1)))
@@ -410,6 +416,20 @@ CAP_NEW.LO(technology, year) = 0 ;
 * model calibration and resource constraints
 * ------------------------------------------------------------------------------
 
+ACT.FX('coal_ppl', '2020') = 9.462 ;
+ACT.FX('oil_ppl', '2020') = 0.7 ;
+ACT.FX('solar_PV_ppl', '2020') = 0.839 ;
+ACT.FX('gas_ppl', '2020') = 6.36 ;
+ACT.FX('nuclear_ppl', '2020') = 2.68 ;
+ACT.FX('hydro_ppl', '2020') = 4.36 ;
+ACT.FX('wind_ppl', '2020') = 1.6 ;
+ACT.FX('bio_ppl', '2020') = 0.69 ;
+ACT.FX('other_ppl', '2020') = 0.127 ;
+ACT.FX('coal_nele', '2020') = 10.7 ;
+ACT.FX('oil_nele', '2020') = 43.0 ;
+ACT.FX('gas_nele', '2020') = 18.7 ;
+ACT.FX('bio_nele', '2020') = 10.6 ;
+ACT.FX('other_nele', '2020') = 0.28 ;
 
 * ------------------------------------------------------------------------------
 * model solution
