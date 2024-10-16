@@ -61,6 +61,18 @@ TABLE
         gas_ppl         30      30
         wind_ppl        30      30
 ;
+Parameter
+        diffusion(technology) 'growth rate of capacity additions'
+        /coal_ppl        0.05,
+        gas_ppl         0.05,
+        wind_ppl        0.05/
+;
+Parameter
+        startup(technology) 'constant capacity addition'
+        /coal_ppl       0.001,
+        gas_ppl         0.001,
+        wind_ppl        0.001/
+;
 Equations
         EQ_COST
         EQ_COST_ANNUAL(year)
@@ -68,6 +80,7 @@ Equations
         EQ_EMISS_ANNUAL(year)
         EQ_TOTAL_EMISSION
         EQ_CAPACITY_BALANCE
+        EQ_CAPACITY_DIFFUSION(year, technology)
         ;
 
 cost_capacity(technology, year) = inv(technology, year)*((1+discount_rate)**lifetime(technology,year)*discount_rate)
@@ -84,11 +97,12 @@ EQ_EMISS_ANNUAL(year).. Sum(technology, ACT(technology, year)*emission_intensity
 EQ_TOTAL_EMISSION.. Sum(year, EMISS_ANNUAL(year)) =E= TOTAL_EMISS;
 EQ_CAPACITY_BALANCE(technology, year).. ACT(technology, year) =L= Sum(vintage $ (ORD(vintage)le ORD(year) AND(ORD(year)-ORD(vintage)+1)*plength le lifetime(technology, vintage)),
                                                                         CAP_NEW(technology, vintage)* hours(technology, year));
+EQ_CAPACITY_DIFFUSION(year, technology)$(ORD(year)>1).. CAP_NEW(technology, year) =L= CAP_NEW(technology, year-1) * ((1 + diffusion(technology))**plength) + startup(technology); 
 
 Model simple_model / all / ;
 ACT.LO(technology, year) = 0;
 CAP_NEW.LO(technology, vintage) = 0;
-*TOTAL_EMISS.UP = 200;
+TOTAL_EMISS.UP = 1;
 *TOTAL_COST.UP = 5050;
 
 Solve simple_model minimize TOTAL_COST using LP;
