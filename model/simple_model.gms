@@ -47,6 +47,17 @@ Table
           gas_ppl       0.036   0.036
           wind_ppl          0       0
 ;
+$ONTEXT
+inv(technology, year) = 0 ;
+fom(technology, year) = 0 ;
+Table
+          vom(technology, year) '[$/kWh]'
+                         2020    2030
+          coal_ppl       0.20    0.20
+          gas_ppl        0.22    0.22
+          wind_ppl       0.30    0.30
+;
+$OFFTEXT
 
 Table
           emission_intensity(technology, year) '[gCO2/kWh]'
@@ -72,6 +83,21 @@ Table
           wind_ppl         30      30
 ;
 
+Parameter
+          diffusion(technology) 'annual growth rate of capacity additions'
+        / coal_ppl         0.05,
+          gas_ppl          0.05,
+          wind_ppl         0.05 /
+;
+
+Parameter
+          startup(technology) 'constant capacity additions per period'
+        / coal_ppl         0.001,
+          gas_ppl          0.001,
+          wind_ppl         0.001 /
+;
+
+
 cost_capacity(technology, year) = inv(technology, year) * ((1 + discount_rate)**lifetime(technology, year) * discount_rate) /
                                                           ((1 + discount_rate)**lifetime(technology, year) - 1)
                                 + fom(technology, year) ;
@@ -84,6 +110,7 @@ Equations
          EQ_ENERGY_BALANCE(year)
          EQ_EMISSION(year)
          EQ_CAPACITY_BALANCE(technology, year)
+         EQ_CAPACITY_DIFFUSION(technology, year)
 ;
 
 
@@ -94,6 +121,9 @@ EQ_COST..                 Sum(year, COST_ANNUAL(year) * plength * (1 - discount_
 EQ_ENERGY_BALANCE(year).. Sum(technology, ACT(technology, year)) =G= demand(year) ;
 EQ_EMISSION(year)..       Sum(technology, ACT(technology, year) * emission_intensity(technology, year)) =E= EMISS(year) ;
 EQ_CAPACITY_BALANCE(technology, year)..  ACT(technology, year) =L= Sum(vintage $ ((ORD(vintage) le ORD(year)) AND ((ORD(year) - ORD(vintage) + 1) * plength le lifetime(technology, vintage))), CAP_NEW(technology, vintage)) * hours(technology, year) ;
+EQ_CAPACITY_DIFFUSION(technology, year)$(ORD(year) > 1)..
+                         CAP_NEW(technology, year) =L= CAP_NEW(technology, year-1) * (1 + diffusion(technology))**plength + startup(technology) ;
+
 
 DISPLAY vintage ;
 
@@ -101,7 +131,7 @@ Model simple_model / all / ;
 
 ACT.LO(technology, year) = 0 ;
 CAP_NEW.LO(technology, year) = 0 ;
-*EMISS.UP('2030') = 0 ;
+EMISS.UP('2030') = 0 ;
 *TOTAL_COST.UP = 2050 ;
 
 
