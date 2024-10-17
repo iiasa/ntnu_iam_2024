@@ -13,6 +13,11 @@ MESSAGEix
 - [message_ix GitHub repository](https://github.com/iiasa/message_ix/)
 - [MESSAGEix South Africa GitHub repository](https://github.com/tum-ewk/message_ix_south_africa)
 
+FaIR
+----
+- [FaIR documentation](https://docs.fairmodel.net/en/latest/)
+- [DFaIR code (via Box folder at Yale)](https://yale.app.box.com/s/whlqcr7gtzdm4nxnrfhvap2hlzebuvvm/folder/232728558987)
+
 Policies
 --------
 - [Climate Policy Database](http://climatepolicydatabase.org/index.php/Climate_Policy_Database)
