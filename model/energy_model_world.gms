@@ -283,12 +283,12 @@ TABLE
 
 PARAMETER lifetime(technology)               'technical lifetime'
     /
-    coal_ppl     20
+    coal_ppl     30
     gas_ppl      20
     oil_ppl      20
     bio_ppl      20
-    hydro_ppl    40
-    wind_ppl     15
+    hydro_ppl    80
+    wind_ppl     20
     solar_PV_ppl 20
     nuclear_ppl  40
     other_ppl    20
@@ -325,12 +325,12 @@ PARAMETER cost(technology, year)                 'total technology costs on acti
 ;
 
 cost_capacity(technology, year) =  ((inv(technology, year) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year))) $ (lifetime(technology) > 0) ;
+                         + fom(technology, year))) * 1000 $ (lifetime(technology) AND hours(technology)) ;
 
 cost_activity(technology, year) =  vom(technology, year) ;
 
 cost(technology, year) =  ((inv(technology, year) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year)) / (hours(technology))) $ (lifetime(technology) > 0)
+                         + fom(technology, year)) / (hours(technology))) $ (lifetime(technology) AND hours(technology))
                          + vom(technology, year) ;
 
 DISPLAY cost, cost_capacity, cost_activity ;
@@ -370,8 +370,13 @@ EQ_ENERGY_BALANCE(energy, level, year) $ energy_level(energy, level)..
     SUM(technology, ACT(technology, year) * (output(technology, energy, level) - input(technology, energy, level)))
   - demand(energy, level) * (gdp(year)/gdp('2020'))**beta =G= 0 ;
 
+EQ_CAPACITY_BALANCE(technology, year) $ (hours(technology) AND lifetime(technology))..
+    ACT(technology, year) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year)) AND ((ORD(year) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * hours(technology) ;
+
+$ONTEXT
 EQ_CAPACITY_BALANCE(technology, year) $ hours(technology)..
     SUM(year_alias $ ((ORD(year_alias) LE ORD(year)) AND ((ORD(year) - ORD(year_alias)) * period_length) LE lifetime(technology)), CAP_NEW(technology, year_alias) * MIN((lifetime(technology) - (ORD(year) - ORD(year_alias)) * period_length) / period_length, 1)) * hours(technology) =G= ACT(technology, year) ;
+$OFFTEXT
 
 EQ_EMISSION(year)..
     SUM(technology, ACT(technology, year) * CO2_emission(technology)) =E= EMISS(year) ;
@@ -424,12 +429,14 @@ ACT.FX('nuclear_ppl', '2020') = 2.68 ;
 ACT.FX('hydro_ppl', '2020') = 4.36 ;
 ACT.FX('wind_ppl', '2020') = 1.6 ;
 ACT.FX('bio_ppl', '2020') = 0.69 ;
-ACT.FX('other_ppl', '2020') = 0.127 ;
+ACT.LO('other_ppl', '2020') = 0.127 ;
 ACT.FX('coal_nele', '2020') = 10.7 ;
 ACT.FX('oil_nele', '2020') = 43.0 ;
 ACT.FX('gas_nele', '2020') = 18.7 ;
 ACT.FX('bio_nele', '2020') = 10.6 ;
-ACT.FX('other_nele', '2020') = 0.28 ;
+ACT.LO('other_nele', '2020') = 0.28 ;
+
+*ACT.LO('coal_ppl', year) = 9.462 ;
 
 * ------------------------------------------------------------------------------
 * model solution
