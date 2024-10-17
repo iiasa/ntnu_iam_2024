@@ -100,4 +100,4 @@ model fair /all/ ;
 F_GHGabate.fx(tfirst)   = F_GHGabate2020;
 ccatot.fx(tfirst)       = CumEmiss0;
 
-solve fair maximizing CUM_E using nlp ;
+*solve fair maximizing CUM_E using nlp ;
