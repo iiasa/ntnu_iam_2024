@@ -1,5 +1,5 @@
 *set        t  Time periods (5 years per period)                   /1*81/
-set        t  Time periods (10 years per period)                   /1*41/
+*set        t  Time periods (10 years per period)                   /1*41/
 ;
 sets     tfirst(t), tlast(t), tearly(t), tlate(t);
 
@@ -9,11 +9,11 @@ parameter
         eland(t)       Emissions from deforestation (GtCO2 per year)
         e1        Industrial emissions 2020 (GtCO2 per year)           / 37.56  /
         CumEmiss0 Cumulative emissions 2020 (GtC)                      / 633.5/
-        e(t)      Energy and industrial missions over time
+*        e(t)      Energy and industrial missions over time
 ;
 
 * assume emissions to be constant at current levels
-e(t) = e1 ;
+*e(t) = e1 ;
 
 variable
         CCATOT(t)       Total carbon emissions (GtC)
