@@ -5,6 +5,10 @@
 $include energy_model_world.gms
 *$include FAIR-beta-4-3-1.gms
 
+* we detached the solving in the energy model and set a constraint on emissions
+CUM_EMISS.UP = 500;
+SOLVE simple using LP minimize TOTAL_COST ;
+
 * map the year and set indexex from energy and Fair respectively(
 set
     t  Time periods with ten years each /1*43/

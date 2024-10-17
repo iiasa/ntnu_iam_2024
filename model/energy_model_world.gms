@@ -444,6 +444,7 @@ ACT.LO('other_nele', '2020') = 0.28 ;
 
 OPTION LP = CPLEX ;
 
+$onText
 SOLVE simple using LP minimize TOTAL_COST ;
 
 * ------------------------------------------------------------------------------
@@ -564,3 +565,4 @@ LOOP(year,
         PUT year.tl,
             EQ_ENERGY_BALANCE.M('electricity', 'final', year) /
 ) ;
+$offText
