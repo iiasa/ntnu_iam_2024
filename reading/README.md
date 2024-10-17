@@ -70,6 +70,15 @@ Uncertainty analysis using IAMs
 - Marangoni, et al. (2017) Sensitivity of projected long-term CO2 emissions across the Shared Socioeconomic Pathways. Nature Climate Change 7(2), pp 113-117, [doi:10.1038/nclimate3199](https://doi.org/10.1038/nclimate3199)
 - Rogelj et al. (2017) Understanding the origin of Paris Agreement emission uncertainties. Nature Communications 8, 15748. [doi:10.1038/ncomms15748](https://doi.org/10.1038/ncomms15748).
 
+Simple climate models
+---------------------
+- Millar et al. (2017) A modified impulse-response representation of the global near-surface air temperature and atmospheric concentration response to carbon dioxide emissions. Atmospheric Chemistry and Physics, 17, 7213–7228, [doi:10.5194/acp-17-7213-2017](https://doi.org/10.5194/acp-17-7213-2017).
+- Smith et al. (2018) FAIR v1.3: a simple emissions-based impulse response and carbon cycle model. Geosci. Model Dev., 11, 2273–2297, [doi:10.5194/gmd-11-2273-2018](https://doi.org/10.5194/gmd-11-2273-2018)
+- Leach et al. (2021) FaIRv2.0.0: a generalized impulse response model for climate uncertainty and future scenario exploration, Geosci. Model Dev., 14, 3007–3036, [doi:10.5194/gmd-14-3007-2021](https://doi.org/10.5194/gmd-14-3007-2021). 
+- Kikstra et al. (2022) The IPCC Sixth Assessment Report WGIII climate assessment of mitigation pathways: from emissions to global temperatures, Geosci. Model Dev., 15, 9075–9109, [doi:10.5194/gmd-15-9075-2022](https://doi.org/10.5194/gmd-15-9075-2022).
+- Smith et al. (2024) fair-calibrate v1.4.1: calibration, constraining and validation of the FaIR simple climate model for reliable future climate projections. EGUsphere [preprint], [doi:10.5194/egusphere-2024-708](https://doi.org/10.5194/egusphere-2024-708).
+- Barragea and Nordhaus (2024) Policies, projections, and the social cost of carbon: Results from the DICE-2023 model. PNAS Vol. 121 No. 13 e2312030121 [doi:10.1073/pnas.2312030121](https://doi.org/10.1073/pnas.2312030121)
+
 Good modeling practice
 ----------------------
 - [Git Book](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git)
