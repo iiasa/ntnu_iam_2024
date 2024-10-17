@@ -444,8 +444,8 @@ ACT.LO('other_nele', '2020') = 0.28 ;
 
 OPTION LP = CPLEX ;
 
-SOLVE simple using LP minimize TOTAL_COST ;
-
+*SOLVE simple using LP minimize TOTAL_COST ;
+$ONTEXT
 * ------------------------------------------------------------------------------
 * export of results in GDX format
 * ------------------------------------------------------------------------------
@@ -564,3 +564,4 @@ LOOP(year,
         PUT year.tl,
             EQ_ENERGY_BALANCE.M('electricity', 'final', year) /
 ) ;
+$OFFTEXT
