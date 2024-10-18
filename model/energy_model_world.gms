@@ -444,6 +444,8 @@ ACT.LO('other_nele', '2020') = 0.28 ;
 
 OPTION LP = CPLEX ;
 
+*SOLVE simple using LP minimize TOTAL_COST ;
+$ONTEXT
 $onText
 SOLVE simple using LP minimize TOTAL_COST ;
 
