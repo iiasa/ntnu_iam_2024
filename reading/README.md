@@ -79,6 +79,10 @@ Simple climate models
 - Smith et al. (2024) fair-calibrate v1.4.1: calibration, constraining and validation of the FaIR simple climate model for reliable future climate projections. EGUsphere [preprint], [doi:10.5194/egusphere-2024-708](https://doi.org/10.5194/egusphere-2024-708).
 - Barragea and Nordhaus (2024) Policies, projections, and the social cost of carbon: Results from the DICE-2023 model. PNAS Vol. 121 No. 13 e2312030121 [doi:10.1073/pnas.2312030121](https://doi.org/10.1073/pnas.2312030121)
 
+Integrating climate change impacts
+----------------------------------
+- Byers et al. (2024) Flexible emulation of the climate warming cooling feedback to globally assess the maladaptation implications of future air conditioning use.  Environmental Research: Energy, Volume 1, Number 3, [doi:10.1088/2753-3751/ad6f11](https://doi.org/10.1088/2753-3751/ad6f11).
+
 Good modeling practice
 ----------------------
 - [Git Book](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git)
