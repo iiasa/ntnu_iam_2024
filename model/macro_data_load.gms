@@ -3,17 +3,12 @@
 * set and parameter definitions                                                                                        *
 *----------------------------------------------------------------------------------------------------------------------*
 
-* indices to parameters will always be in the following order:
-* node(location),commodity,level,year(actual),year(vintage),
-
-
 Sets
-    commodity       commodity ( resources - oil - gas - electricty - water - land availability - etc. )
-    level           level ( primary - secondary - ... - useful )
-    year_all        years (over entire model horizon) / 2020, 2030, 2040, 2050, 2060, 2070, 2080 /
+*    commodity       commodity ( resources - oil - gas - electricty - water - land availability - etc. )
+*    level           level ( primary - secondary - ... - useful )
+*    year_all        years (over entire model horizon) / 2020, 2030, 2040, 2050, 2060, 2070, 2080 /
     year(year_all)  years included in a model instance (for myopic or rolling-horizon optimization)
     macro_horizon(year_all)          set of periods included in the MACRO model horizon
-*    macro_initial_period(year_all)   flag for period in model horizon in which to initialize model parameters in (period prior to first model period) - used in MACRO
     macro_base_period(year_all)      flag for base year period in model horizon (period prior to first model period) - used in MACRO
     first_period(year_all)           flag for first period in model horizon
     last_period(year_all)            flag for last period in model horizon
@@ -31,7 +26,7 @@ $LABEL macro_sets
 * sets specific to MACRO
 
 Sets
-    sector      Energy Sectors for macro-economic analysis in MACRO    / ELEC, NELE /
+*    sector      Energy Sectors for macro-economic analysis in MACRO    / ELEC, NELE /
     seq_period(year_all,year_all2)    mapping of one period ('year_all') to the next ('year_all2')
 ;
 
@@ -58,7 +53,7 @@ PARAMETERS
 
          enestart(sector,year_all)  Consumption level of energy services from MESSAGE model run
          eneprice(sector,year_all)  Shadow prices of energy services from MESSAGE model run
-         total_cost(year_all)       Total energy system costs from MESSAGE model run
+         total_cost_energy(year_all)       Total energy system costs from MESSAGE model run
 
          udf(year_all)             Utility discount factor in period year
          labor(year_all)           Labor force (efficiency units) in period year
@@ -135,10 +130,10 @@ Table    demand_MESSAGE(sector,year_all) consumption level of energy services fr
 Table
          price_MESSAGE(sector,year_all)  shadow prices of energy services [USD per kWk] from MESSAGE model run
                  2020    2030    2040    2050    2060    2070    2080
-         ELEC    0.0567  0.0567  0.0567  0.0567  0.0567  0.0567  0.0567  
-         NELE    0.020   0.020   0.020   0.020   0.020   0.020   0.020   
+         ELEC    0.0567  0.0567  0.0567  0.0567  0.0567  0.0567  0.0567
+         NELE    0.020   0.020   0.020   0.020   0.020   0.020   0.020
 ;
-*price_MESSAGE(sector, year_all)$(NOT macro_base_period(year_all)) = price_MESSAGE(sector, year_all) * 1.5 ; 
+*price_MESSAGE(sector, year_all)$(NOT macro_base_period(year_all)) = price_MESSAGE(sector, year_all) * 1.5 ;
 Parameter
          cost_MESSAGE(year_all)          total energy system costs [trillionUSD] from MESSAGE model run
          / 2020 5.053, 2030 3.045, 2040 3.080, 2050 3.516, 2060 3.852, 2070 4.376, 2080 4.996 / ;
@@ -148,12 +143,12 @@ enestart(sector,year_all) = demand_MESSAGE(sector,year_all) ;
 * useful energy/service demand prices from MESSAGE get mapped onto MACRO sector structure
 eneprice(sector,year_all) = price_MESSAGE(sector,year_all) ;
 * total energy system costs by node and time
-total_cost(year_all) = cost_MESSAGE(year_all) ;
+total_cost_energy(year_all) = cost_MESSAGE(year_all) ;
 
 * base year useful energy/service demand levels from MESSAGE get mapped onto MACRO sector structure
 demand_base(sector) = sum(macro_base_period, enestart(sector,macro_base_period) ) ;
 
-DISPLAY enestart, eneprice, total_cost;
+DISPLAY enestart, eneprice, total_cost_energy;
 
 * ------------------------------------------------------------------------------
 * calculate start values

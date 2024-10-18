@@ -89,7 +89,7 @@ POSITIVE VARIABLES
     Y(year_all)                Production in period year
     YN(year_all)               New production vintage in period year
 
-    PHYSENE(sector, year_all)  Physical end-use service or commodity use
+*    PHYSENE(sector, year_all)  Physical end-use service or commodity use
     PRODENE(sector, year_all)  Value of end-use services or commodities in the production function
     NEWENE(sector, year_all)   New end-use service or commodity (production function value)
 
@@ -98,13 +98,13 @@ POSITIVE VARIABLES
 ;
 
 VARIABLES
-    UTILITY                          Utility function (discounted log of consumption)
+    UTILITY                    Utility function (discounted log of consumption)
     EC(year_all)               System costs (Trillion $) based on MESSAGE model run
 ;
 
 Variables
 * auxiliary variables for demand, prices, costs and GDP (for reporting when MESSAGE is run with MACRO)
-    GDP(year_all)               gross domestic product (GDP) in market exchange rates for MACRO reporting
+    GDP_MACRO(year_all)               gross domestic product (GDP) in market exchange rates for MACRO reporting
 ;
 
 * ------------------------------------------------------------------------------
@@ -290,12 +290,18 @@ PRODENE(sector, year) * aeei_factor(sector, year)
 ***
 
 COST_ENERGY(year) $ (NOT macro_base_period(year))..
+EC(year) =E= COST_ANNUAL(year) / 1000
+;
+
+
+$ONTEXT
+COST_ENERGY(year) $ (NOT macro_base_period(year))..
 EC(year) =E=
 (total_cost(year)
 + SUM(sector, eneprice(sector, year) * (PHYSENE(sector, year) - enestart(sector, year)))
 + SUM(sector, eneprice(sector, year) / enestart(sector, year) * (PHYSENE(sector, year) - enestart(sector, year)) * (PHYSENE(sector, year) - enestart(sector, year))))
 ;
-
+$OFFTEXT
 ***
 * Equation TERMINAL_CONDITION
 * ---------------------------------
