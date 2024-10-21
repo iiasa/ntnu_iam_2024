@@ -67,15 +67,6 @@ SET technology          'technologies'
       electricity.useful
       nonelectric.useful /
 
-    year_all                'periods'
-    / 2020
-      2030
-      2040
-      2050
-      2060
-      2070
-      2080 /
-
     share      'technology share set'
     / coal_nonelectric /
 
@@ -89,7 +80,13 @@ SET technology          'technologies'
       coal_nonelectric.bio_nele
       coal_nonelectric.solar_nele
       coal_nonelectric.other_nele /
+
+    map_energy_sector(energy, level, sector)
+    / electricity.useful.ELEC
+      nonelectric.useful.NELE /
 ;
+
+
 
 ALIAS (year_all, year_alias) ;
 
@@ -345,9 +342,8 @@ VARIABLES
     ACT(technology, year_all)       'technology acitvity in period year_all'
     CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
     EMISS(year_all)                 'CO2 emissions in period year_all'
-    CUM_EMISS                   'cumulative CO2 emissions'
-    COST_ANNUAL(year_all)           'costs per year_all'
-    TOTAL_COST                  'total discounted systems costs'
+    CUM_EMISS                       'cumulative CO2 emissions'
+    TOTAL_COST                      'total discounted systems costs'
 ;
 
 * declaration of equations
@@ -364,26 +360,16 @@ EQUATIONS
     EQ_SHARE_LO(share, year_all)
 ;
 
-SET
-    sector      Energy Sectors for macro-economic analysis in MACRO    / ELEC, NELE / ;
-
-POSITIVE VARIABLE    PHYSENE(sector, year_all)  Physical end-use service or commodity use ;
-
-SET
-    map_energy_sector(energy, level, sector) / electricity.useful.ELEC, nonelectric.useful.NELE / ;
-
-
 * definition of equations
-
-EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
-    SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
-  - SUM(sector $ map_energy_sector(energy, level, sector), PHYSENE(sector, year_all)) =G= 0 ;
-
 $ONTEXT
 EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
     SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
-  - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
+  - SUM(sector $ map_energy_sector(energy, level, sector), PHYSENE(sector, year_all)) =G= 0 ;
 $OFFTEXT
+
+EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
+    SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
+  - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
 
 EQ_CAPACITY_BALANCE(technology, year_all) $ (hours(technology) AND lifetime(technology))..
     ACT(technology, year_all) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * hours(technology) ;
@@ -425,7 +411,17 @@ EQ_COST..
 
 * definition of model (keyword 'all' means that all equations defined above are part of the model)
 
-MODEL simple / all / ;
+MODEL energy_model /
+    EQ_ENERGY_BALANCE
+    EQ_CAPACITY_BALANCE
+    EQ_EMISSION
+    EQ_EMISSION_CUMULATIVE
+    EQ_DIFFUSION_UP
+    EQ_COST_ANNUAL
+    EQ_COST
+    EQ_SHARE_UP
+    EQ_SHARE_LO
+/ ;
 
 * constraint on individual variables
 
@@ -453,13 +449,6 @@ ACT.LO('other_nele', '2020') = 0.28 ;
 
 *ACT.LO('coal_ppl', year_all) = 9.462 ;
 
-* ------------------------------------------------------------------------------
-* model solution
-* ------------------------------------------------------------------------------
-
-OPTION LP = CPLEX ;
-
-*SOLVE simple using LP minimize TOTAL_COST ;
 $ONTEXT
 * ------------------------------------------------------------------------------
 * export of results in GDX format
