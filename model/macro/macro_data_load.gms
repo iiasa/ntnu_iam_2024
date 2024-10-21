@@ -4,9 +4,6 @@
 *----------------------------------------------------------------------------------------------------------------------*
 
 Sets
-*    commodity       commodity ( resources - oil - gas - electricty - water - land availability - etc. )
-*    level           level ( primary - secondary - ... - useful )
-*    year_all        years (over entire model horizon) / 2020, 2030, 2040, 2050, 2060, 2070, 2080 /
     year(year_all)  years included in a model instance (for myopic or rolling-horizon optimization)
     macro_horizon(year_all)          set of periods included in the MACRO model horizon
     macro_base_period(year_all)      flag for base year period in model horizon (period prior to first model period) - used in MACRO
@@ -26,7 +23,6 @@ $LABEL macro_sets
 * sets specific to MACRO
 
 Sets
-*    sector      Energy Sectors for macro-economic analysis in MACRO    / ELEC, NELE /
     seq_period(year_all,year_all2)    mapping of one period ('year_all') to the next ('year_all2')
 ;
 
