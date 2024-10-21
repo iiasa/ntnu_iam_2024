@@ -3,25 +3,20 @@
 * ------------------------------------------------------------------------------
 
 * include set, parameter and variable definitions that are shared across the models
-$INCLUDE shared.gms
+$include shared.gms
 
-$INCLUDE macro/macro_data_load.gms
-$INCLUDE macro/macro_core.gms
-$INCLUDE macro/macro_presolve.gms
+$include energy/energy_model_world.gms
 
 * ------------------------------------------------------------------------------
 * solve model
 * ------------------------------------------------------------------------------
 
-SOLVE MACRO MAXIMIZING UTILITY USING NLP ;
+OPTION LP = CPLEX ;
+
+SOLVE energy_model using LP minimize TOTAL_COST ;
 
 * ------------------------------------------------------------------------------
 * reporting
 * ------------------------------------------------------------------------------
 
-GDP_MACRO.L(year) = (I.L(year) + C.L(year) + EC.L(year)) ;
-
-DISPLAY GDP_MACRO.L ;
-
-execute_unload "macro_results.gdx"
-
+execute_unload "energy_results.gdx"
