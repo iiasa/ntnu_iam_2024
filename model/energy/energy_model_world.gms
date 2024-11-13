@@ -24,7 +24,7 @@ SET technology          'technologies'
       wind_ppl          'wind turbine'
       solar_PV_ppl      'solar photovoltaics power plant'
       nuclear_ppl       'nuclear_ppl power plant'
-      other_ppl             'other_ppl power plants'
+      other_ppl         'other_ppl power plants'
       coal_nele         'non-electric coal'
       oil_nele          'non-electric oil'
       gas_nele          'non-electric gas'
@@ -45,7 +45,8 @@ SET technology          'technologies'
       wind
       solar
       electricity
-      nonelectric /
+      nonelectric
+      aviation /
 
     level               'energy level'
     / primary
@@ -65,7 +66,8 @@ SET technology          'technologies'
       electricity.secondary
       electricity.final
       electricity.useful
-      nonelectric.useful /
+      nonelectric.useful
+      aviation.useful /
 
     share      'technology share set'
     / coal_nonelectric /
@@ -142,6 +144,7 @@ PARAMETERS
       hydro_pot.hydro.primary                1
       wind_pot.wind.primary                  1
       solar_pot.solar.final                  1
+      oil_nele.aviation.useful               1
     /
 
     CO2_emission(technology)                 'specific CO2 emission coefficients [tCO2/MWh]'
@@ -201,7 +204,9 @@ PARAMETERS
 
     demand(energy, level)                    'demand in base year_all [PWh]'
     / electricity.useful        22.60
-      nonelectric.useful        87.3 /
+      nonelectric.useful        85.07
+      aviation.useful           2.23 /
+* The original nonelectric.useful was 87.3. Then the demand of aviation (2.23) is subtracted from it to get 85.07 
 
     gdp(year_all)                                'GDP [index]'
     / 2020  1
