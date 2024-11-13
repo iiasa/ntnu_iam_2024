@@ -104,7 +104,7 @@ VARIABLES
 
 Variables
 * auxiliary variables for demand, prices, costs and GDP (for reporting when MESSAGE is run with MACRO)
-    GDP(year_all)               gross domestic product (GDP) in market exchange rates for MACRO reporting
+    GDP_macro(year_all)               gross domestic product (GDP) in market exchange rates for MACRO reporting
 ;
 
 * ------------------------------------------------------------------------------
@@ -290,12 +290,16 @@ PRODENE(sector, year) * aeei_factor(sector, year)
 ***
 
 COST_ENERGY(year) $ (NOT macro_base_period(year))..
+EC(year) =E= COST_ANNUAL(year)/1000
+;
+$onText
+COST_ENERGY(year) $ (NOT macro_base_period(year))..
 EC(year) =E=
 (total_cost(year)
 + SUM(sector, eneprice(sector, year) * (PHYSENE(sector, year) - enestart(sector, year)))
 + SUM(sector, eneprice(sector, year) / enestart(sector, year) * (PHYSENE(sector, year) - enestart(sector, year)) * (PHYSENE(sector, year) - enestart(sector, year))))
 ;
-
+$offText
 ***
 * Equation TERMINAL_CONDITION
 * ---------------------------------

@@ -42,7 +42,7 @@ EC.FX(macro_base_period) = y0 - i0 - c0 ;
 * ------------------------------------------------------------------------------
 * solve statement
 * ------------------------------------------------------------------------------
-
+$onText
 SOLVE MACRO MAXIMIZING UTILITY USING NLP ;
 
 * ------------------------------------------------------------------------------
@@ -52,3 +52,4 @@ SOLVE MACRO MAXIMIZING UTILITY USING NLP ;
 GDP.L(year) = (I.L(year) + C.L(year) + EC.L(year)) ;
 
 DISPLAY GDP.L ;
+$offText

@@ -67,7 +67,7 @@ SET technology          'technologies'
       electricity.useful
       nonelectric.useful /
 
-    year                'periods'
+    year_all                'periods'
     / 2020
       2030
       2040
@@ -91,7 +91,7 @@ SET technology          'technologies'
       coal_nonelectric.other_nele /
 ;
 
-ALIAS (year, year_alias) ;
+ALIAS (year_all, year_alias) ;
 
 * ------------------------------------------------------------------------------
 * parameter definitions
@@ -202,11 +202,11 @@ PARAMETERS
       bio_pot      1
     /
 
-    demand(energy, level)                    'demand in base year [PWh]'
+    demand(energy, level)                    'demand in base year_all [PWh]'
     / electricity.useful        22.60
       nonelectric.useful        87.3 /
 
-    gdp(year)                                'GDP [index]'
+    gdp(year_all)                                'GDP [index]'
     / 2020  1
       2030  1.2
       2040  1.4
@@ -229,7 +229,7 @@ PARAMETERS
 ;
 
 TABLE
-    inv(technology, year)                    'investment cost [$/kW]'
+    inv(technology, year_all)                    'investment cost [$/kW]'
                             2020    2030    2040    2050    2060    2070    2080
     coal_ppl                1500    1500    1500    1500    1500    1500    1500
     gas_ppl                  800     800     800     800     800     800     800
@@ -243,7 +243,7 @@ TABLE
 ;
 
 TABLE
-    fom(technology, year)                    'fixed operation and maintenance cost [$/(kW/yr)]'
+    fom(technology, year_all)                    'fixed operation and maintenance cost [$/(kW/yr)]'
                             2020    2030    2040    2050    2060    2070    2080
     coal_ppl                  40      40      40      40      40      40      40
     gas_ppl                   25      25      25      25      25      25      25
@@ -257,7 +257,7 @@ TABLE
 ;
 
 TABLE
-    vom(technology, year)                    'variable cost [$/MWh]'
+    vom(technology, year_all)                    'variable cost [$/MWh]'
                             2020    2030    2040    2050    2060    2070    2080
     coal_ppl                0.0     0.0     0.0     0.0     0.0     0.0     0.0
     gas_ppl                 0.0     0.0     0.0     0.0     0.0     0.0     0.0
@@ -319,19 +319,19 @@ PARAMETER hours(technology)                  'full load hours'
     other_nele   7000
 / ;
 
-PARAMETER cost(technology, year)                 'total technology costs on activity basis [$/MWh]'
-          cost_capacity(technology, year)        'annuity of capacity-related investment costs [$/kW]'
-          cost_activity(technology, year)        'activity-related technology costs [$/MWh]'
+PARAMETER cost(technology, year_all)                 'total technology costs on activity basis [$/MWh]'
+          cost_capacity(technology, year_all)        'annuity of capacity-related investment costs [$/kW]'
+          cost_activity(technology, year_all)        'activity-related technology costs [$/MWh]'
 ;
 
-cost_capacity(technology, year) =  ((inv(technology, year) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year))) * 1000 $ (lifetime(technology) AND hours(technology)) ;
+cost_capacity(technology, year_all) =  ((inv(technology, year_all) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
+                         + fom(technology, year_all))) * 1000 $ (lifetime(technology) AND hours(technology)) ;
 
-cost_activity(technology, year) =  vom(technology, year) ;
+cost_activity(technology, year_all) =  vom(technology, year_all) ;
 
-cost(technology, year) =  ((inv(technology, year) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year)) / (hours(technology))) $ (lifetime(technology) AND hours(technology))
-                         + vom(technology, year) ;
+cost(technology, year_all) =  ((inv(technology, year_all) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
+                         + fom(technology, year_all)) / (hours(technology))) $ (lifetime(technology) AND hours(technology))
+                         + vom(technology, year_all) ;
 
 DISPLAY cost, cost_capacity, cost_activity ;
 
@@ -342,11 +342,11 @@ DISPLAY cost, cost_capacity, cost_activity ;
 * definition of variables that are part of the optimization
 
 VARIABLES
-    ACT(technology, year)       'technology acitvity in period year'
-    CAP_NEW(technology, year)   'new technology capacity built in period year'
-    EMISS(year)                 'CO2 emissions in period year'
+    ACT(technology, year_all)       'technology acitvity in period year_all'
+    CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
+    EMISS(year_all)                 'CO2 emissions in period year_all'
     CUM_EMISS                   'cumulative CO2 emissions'
-    COST_ANNUAL(year)           'costs per year'
+    COST_ANNUAL(year_all)           'costs per year_all'
     TOTAL_COST                  'total discounted systems costs'
 ;
 
@@ -358,54 +358,57 @@ EQUATIONS
     EQ_EMISSION                'summation of CO2 emissions'
     EQ_EMISSION_CUMULATIVE     'cumulative CO2 emissions'
     EQ_DIFFUSION_UP            'upper technology capacity diffusion constraint'
-    EQ_COST_ANNUAL             'costs per year'
+    EQ_COST_ANNUAL             'costs per year_all'
     EQ_COST                    'summation of total systems costs'
-    EQ_SHARE_UP(share, year)
-    EQ_SHARE_LO(share, year)
+    EQ_SHARE_UP(share, year_all)
+    EQ_SHARE_LO(share, year_all)
 ;
 
 * definition of equations
-
-EQ_ENERGY_BALANCE(energy, level, year) $ energy_level(energy, level)..
-    SUM(technology, ACT(technology, year) * (output(technology, energy, level) - input(technology, energy, level)))
-  - demand(energy, level) * (gdp(year)/gdp('2020'))**beta =G= 0 ;
-
-EQ_CAPACITY_BALANCE(technology, year) $ (hours(technology) AND lifetime(technology))..
-    ACT(technology, year) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year)) AND ((ORD(year) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * hours(technology) ;
+EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
+    SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
+  - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
+$onText
+EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
+    SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
+  - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
+$offText
+EQ_CAPACITY_BALANCE(technology, year_all) $ (hours(technology) AND lifetime(technology))..
+    ACT(technology, year_all) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * hours(technology) ;
 
 $ONTEXT
-EQ_CAPACITY_BALANCE(technology, year) $ hours(technology)..
-    SUM(year_alias $ ((ORD(year_alias) LE ORD(year)) AND ((ORD(year) - ORD(year_alias)) * period_length) LE lifetime(technology)), CAP_NEW(technology, year_alias) * MIN((lifetime(technology) - (ORD(year) - ORD(year_alias)) * period_length) / period_length, 1)) * hours(technology) =G= ACT(technology, year) ;
+EQ_CAPACITY_BALANCE(technology, year_all) $ hours(technology)..
+    SUM(year_alias $ ((ORD(year_alias) LE ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias)) * period_length) LE lifetime(technology)), CAP_NEW(technology, year_alias) * MIN((lifetime(technology) - (ORD(year_all) - ORD(year_alias)) * period_length) / period_length, 1)) * hours(technology) =G= ACT(technology, year_all) ;
 $OFFTEXT
 
-EQ_EMISSION(year)..
-    SUM(technology, ACT(technology, year) * CO2_emission(technology)) =E= EMISS(year) ;
+EQ_EMISSION(year_all)..
+    SUM(technology, ACT(technology, year_all) * CO2_emission(technology)) =E= EMISS(year_all) ;
 
 EQ_EMISSION_CUMULATIVE..
-    SUM(year, EMISS(year) * period_length) =E= CUM_EMISS ;
+    SUM(year_all, EMISS(year_all) * period_length) =E= CUM_EMISS ;
 
-EQ_DIFFUSION_UP(technology, year) $ ((NOT ORD(year) = 1) AND diffusion_up(technology))..
-    CAP_NEW(technology, year) =L= CAP_NEW(technology, year - 1) * (1 + diffusion_up(technology))**period_length + startup(technology) ;
+EQ_DIFFUSION_UP(technology, year_all) $ ((NOT ORD(year_all) = 1) AND diffusion_up(technology))..
+    CAP_NEW(technology, year_all) =L= CAP_NEW(technology, year_all - 1) * (1 + diffusion_up(technology))**period_length + startup(technology) ;
 
-EQ_SHARE_UP(share, year)$(share_up(share))..
-                          SUM(technology$tec_share(share, technology), ACT(technology, year)) =L= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year)) * share_up(share) ;
+EQ_SHARE_UP(share, year_all)$(share_up(share))..
+                          SUM(technology$tec_share(share, technology), ACT(technology, year_all)) =L= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year_all)) * share_up(share) ;
 
-EQ_SHARE_LO(share, year)$(share_lo(share))..
-                          SUM(technology$tec_share(share, technology), ACT(technology, year)) =G= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year)) * share_lo(share) ;
+EQ_SHARE_LO(share, year_all)$(share_lo(share))..
+                          SUM(technology$tec_share(share, technology), ACT(technology, year_all)) =G= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year_all)) * share_lo(share) ;
 
-EQ_COST_ANNUAL(year)..    SUM(technology, ACT(technology, year) * vom(technology, year)
-                                        + SUM(year_alias $ ((ORD(year_alias) le ORD(year)) AND ((ORD(year) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias) * cost_capacity(technology, year_alias)))
-                          =E= COST_ANNUAL(year) ;
+EQ_COST_ANNUAL(year_all)..    SUM(technology, ACT(technology, year_all) * vom(technology, year_all)
+                                        + SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias) * cost_capacity(technology, year_alias)))
+                          =E= COST_ANNUAL(year_all) ;
 
 $ONTEXT
-EQ_COST_ANNUAL(year)..
-    SUM(technology, cost_activity(technology, year) * ACT(technology, year))
-  + SUM(technology, cost_capacity(technology, year) * CAP_NEW(technology, year) * SUM(year_alias $ ((ORD(year_alias) GE ORD(year)) AND ((ORD(year_alias) - ORD(year)) * period_length) LE lifetime(technology)), MIN((lifetime(technology) - (ORD(year_alias) - ORD(year)) * period_length), period_length)))
-=E= COST_ANNUAL(year) ;
+EQ_COST_ANNUAL(year_all)..
+    SUM(technology, cost_activity(technology, year_all) * ACT(technology, year_all))
+  + SUM(technology, cost_capacity(technology, year_all) * CAP_NEW(technology, year_all) * SUM(year_alias $ ((ORD(year_alias) GE ORD(year_all)) AND ((ORD(year_alias) - ORD(year_all)) * period_length) LE lifetime(technology)), MIN((lifetime(technology) - (ORD(year_alias) - ORD(year_all)) * period_length), period_length)))
+=E= COST_ANNUAL(year_all) ;
 $OFFTEXT
 
 EQ_COST..
-    SUM(year, COST_ANNUAL(year) * period_length * (1 - discount_rate)**(period_length * (ORD(year) - 1)))
+    SUM(year_all, COST_ANNUAL(year_all) * period_length * (1 - discount_rate)**(period_length * (ORD(year_all) - 1)))
 =E= TOTAL_COST ;
 
 * definition of model (keyword 'all' means that all equations defined above are part of the model)
@@ -414,8 +417,8 @@ MODEL simple / all / ;
 
 * constraint on individual variables
 
-ACT.LO(technology, year) = 0 ;
-CAP_NEW.LO(technology, year) = 0 ;
+ACT.LO(technology, year_all) = 0 ;
+CAP_NEW.LO(technology, year_all) = 0 ;
 
 * ------------------------------------------------------------------------------
 * model calibration and resource constraints
@@ -436,7 +439,7 @@ ACT.FX('gas_nele', '2020') = 18.7 ;
 ACT.FX('bio_nele', '2020') = 10.6 ;
 ACT.LO('other_nele', '2020') = 0.28 ;
 
-*ACT.LO('coal_ppl', year) = 9.462 ;
+*ACT.LO('coal_ppl', year_all) = 9.462 ;
 
 * ------------------------------------------------------------------------------
 * model solution
@@ -493,17 +496,17 @@ PUT model_output ;
 PUT / 'electricity generation', 'TWh'/ ;
 
 PUT '', 'Coal', 'Gas', 'Oil', 'Biomass', 'Hydro', 'Wind', 'Solar', 'Nuclear', 'Other' / ;
-LOOP(year,
-        PUT year.tl,
-            (ACT.L('coal_ppl', year)),
-            (ACT.L('gas_ppl', year)),
-            (ACT.L('oil_ppl', year)),
-            (ACT.L('bio_ppl', year)),
-            (ACT.L('hydro_ppl', year)),
-            (ACT.L('wind_ppl', year)),
-            (ACT.L('solar_PV_ppl', year)),
-            (ACT.L('nuclear_ppl', year)),
-            (ACT.L('other_ppl', year)) /
+LOOP(year_all,
+        PUT year_all.tl,
+            (ACT.L('coal_ppl', year_all)),
+            (ACT.L('gas_ppl', year_all)),
+            (ACT.L('oil_ppl', year_all)),
+            (ACT.L('bio_ppl', year_all)),
+            (ACT.L('hydro_ppl', year_all)),
+            (ACT.L('wind_ppl', year_all)),
+            (ACT.L('solar_PV_ppl', year_all)),
+            (ACT.L('nuclear_ppl', year_all)),
+            (ACT.L('other_ppl', year_all)) /
 ) ;
 
 * ------------------------------------------------------------------------------
@@ -513,17 +516,17 @@ LOOP(year,
 PUT / 'new capacity', 'GW'/ ;
 
 PUT '', 'Coal', 'Gas', 'Oil', 'Biomass', 'Hydro', 'Wind', 'Solar', 'nuclear', 'other' / ;
-LOOP(year,
-        PUT year.tl,
-            (CAP_NEW.L('coal_ppl', year)),
-            (CAP_NEW.L('gas_ppl', year)),
-            (CAP_NEW.L('oil_ppl', year)),
-            (CAP_NEW.L('bio_ppl', year)),
-            (CAP_NEW.L('hydro_ppl', year)),
-            (CAP_NEW.L('wind_ppl', year)),
-            (CAP_NEW.L('solar_PV_ppl', year)),
-            (CAP_NEW.L('nuclear_ppl', year)),
-            (CAP_NEW.L('other_ppl', year)) /
+LOOP(year_all,
+        PUT year_all.tl,
+            (CAP_NEW.L('coal_ppl', year_all)),
+            (CAP_NEW.L('gas_ppl', year_all)),
+            (CAP_NEW.L('oil_ppl', year_all)),
+            (CAP_NEW.L('bio_ppl', year_all)),
+            (CAP_NEW.L('hydro_ppl', year_all)),
+            (CAP_NEW.L('wind_ppl', year_all)),
+            (CAP_NEW.L('solar_PV_ppl', year_all)),
+            (CAP_NEW.L('nuclear_ppl', year_all)),
+            (CAP_NEW.L('other_ppl', year_all)) /
 ) ;
 
 * ------------------------------------------------------------------------------
@@ -533,15 +536,15 @@ LOOP(year,
 PUT / 'final energy consumption', 'GWh'/ ;
 
 PUT '', 'electricity', 'coal', 'gas', 'oil', 'biomass', 'solar', 'other' / ;
-LOOP(year,
-        PUT year.tl,
-             (ACT.L('appliances', year) * input('appliances', 'electricity', 'final')),
-             (ACT.L('coal_nele', year) * input('coal_nele', 'coal', 'final')),
-             (ACT.L('gas_nele', year) * input('gas_nele', 'gas', 'final')),
-             (ACT.L('oil_nele', year) * input('oil_nele', 'oil', 'final')),
-             (ACT.L('bio_nele', year) * input('bio_nele', 'biomass', 'final')),
-             (ACT.L('solar_nele', year) * input('solar_nele', 'solar', 'final')),
-             (ACT.L('other_nele', year)) /
+LOOP(year_all,
+        PUT year_all.tl,
+             (ACT.L('appliances', year_all) * input('appliances', 'electricity', 'final')),
+             (ACT.L('coal_nele', year_all) * input('coal_nele', 'coal', 'final')),
+             (ACT.L('gas_nele', year_all) * input('gas_nele', 'gas', 'final')),
+             (ACT.L('oil_nele', year_all) * input('oil_nele', 'oil', 'final')),
+             (ACT.L('bio_nele', year_all) * input('bio_nele', 'biomass', 'final')),
+             (ACT.L('solar_nele', year_all) * input('solar_nele', 'solar', 'final')),
+             (ACT.L('other_nele', year_all)) /
 ) ;
 
 * ------------------------------------------------------------------------------
@@ -551,9 +554,9 @@ LOOP(year,
 PUT / 'emissions', 'kt CO2'/ ;
 
 PUT '', 'CO2 emissions' / ;
-LOOP(year,
-        PUT year.tl,
-            EMISS.L(year) /
+LOOP(year_all,
+        PUT year_all.tl,
+            EMISS.L(year_all) /
 ) ;
 
 * ------------------------------------------------------------------------------
@@ -563,8 +566,8 @@ LOOP(year,
 PUT / 'shadow price (raw)', 'Euro/MWh'/ ;
 
 PUT '', 'electricity final' / ;
-LOOP(year,
-        PUT year.tl,
-            EQ_ENERGY_BALANCE.M('electricity', 'final', year) /
+LOOP(year_all,
+        PUT year_all.tl,
+            EQ_ENERGY_BALANCE.M('electricity', 'final', year_all) /
 ) ;
 $offText

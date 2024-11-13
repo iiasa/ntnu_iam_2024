@@ -10,7 +10,7 @@
 Sets
     commodity       commodity ( resources - oil - gas - electricty - water - land availability - etc. )
     level           level ( primary - secondary - ... - useful )
-    year_all        years (over entire model horizon) / 2020, 2030, 2040, 2050, 2060, 2070, 2080 /
+*    year_all        years (over entire model horizon) / 2020, 2030, 2040, 2050, 2060, 2070, 2080 /
     year(year_all)  years included in a model instance (for myopic or rolling-horizon optimization)
     macro_horizon(year_all)          set of periods included in the MACRO model horizon
 *    macro_initial_period(year_all)   flag for period in model horizon in which to initialize model parameters in (period prior to first model period) - used in MACRO
@@ -58,7 +58,7 @@ PARAMETERS
 
          enestart(sector,year_all)  Consumption level of energy services from MESSAGE model run
          eneprice(sector,year_all)  Shadow prices of energy services from MESSAGE model run
-         total_cost(year_all)       Total energy system costs from MESSAGE model run
+         total_cost_energy(year_all)       Total energy system costs from MESSAGE model run
 
          udf(year_all)             Utility discount factor in period year
          labor(year_all)           Labor force (efficiency units) in period year
@@ -120,7 +120,7 @@ macro_horizon(year_all)$macro_base_period(year_all) = yes;
 
 DISPLAY macro_base_period, first_period, last_period, macro_horizon, year, year2, seq_period;
 
-* ------------------------------------------------------------------------------
+* -----------------------------------------------------------------------------
 * use externally supplied scenario parameters as default starting values for MACRO (these will be overwritten in the actual iteration process)
 * ------------------------------------------------------------------------------
 
@@ -148,12 +148,12 @@ enestart(sector,year_all) = demand_MESSAGE(sector,year_all) ;
 * useful energy/service demand prices from MESSAGE get mapped onto MACRO sector structure
 eneprice(sector,year_all) = price_MESSAGE(sector,year_all) ;
 * total energy system costs by node and time
-total_cost(year_all) = cost_MESSAGE(year_all) ;
+total_cost_energy(year_all) = cost_MESSAGE(year_all) ;
 
 * base year useful energy/service demand levels from MESSAGE get mapped onto MACRO sector structure
 demand_base(sector) = sum(macro_base_period, enestart(sector,macro_base_period) ) ;
 
-DISPLAY enestart, eneprice, total_cost;
+DISPLAY enestart, eneprice, total_cost_energy;
 
 * ------------------------------------------------------------------------------
 * calculate start values
