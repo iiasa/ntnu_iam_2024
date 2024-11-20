@@ -1,0 +1,38 @@
+
+--- Job run_energy.gms Start 11/20/24 10:10:47 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\47\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input C:\projects\ntnu_iam_2024\model\run_energy.gms
+    PageSize 0
+    ScrDir C:\projects\ntnu_iam_2024\model\225a\
+    SysDir C:\GAMS\47\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+*** License has expired 24 days ago
+Licensee: GAMS Demo, for EULA and demo limitations see   G240530/0001CB-GEN
+          https://www.gams.com/latest/docs/UG%5FLicense.html         DC0000
+          C:\GAMS\47\gamslice.txt
+          Demo license for demonstration and instructional purposes only
+Processor information: 1 socket(s), 16 core(s), and 22 thread(s) available
+GAMS 47.6.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
+--- Starting compilation
+--- run_energy.gms(6) 2 Mb
+--- . shared.gms(25) 3 Mb
+--- run_energy.gms(8) 3 Mb
+--- . energy_model_world.gms(381) 3 Mb 2 Errors
+*** Error 140 in C:\projects\ntnu_iam_2024\model\energy\energy_model_world.gms
+    Unknown symbol
+*** Error 148 in C:\projects\ntnu_iam_2024\model\energy\energy_model_world.gms
+    Dimension different - The symbol is referenced with more/less
+       indices as declared
+--- . energy_model_world.gms(627) 3 Mb
+--- run_energy.gms(16) 3 Mb 3 Errors
+*** Error 257 in C:\projects\ntnu_iam_2024\model\run_energy.gms
+    Solve statement not checked because of previous errors
+--- run_energy.gms(22) 3 Mb 3 Errors
+*** Status: Compilation error(s)
+--- Job run_energy.gms Stop 11/20/24 10:10:47 elapsed 0:00:00.024
