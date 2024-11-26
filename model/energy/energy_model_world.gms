@@ -108,25 +108,33 @@ PARAMETERS
     period_length
     / 10 /
 
+* --- Input ---
+* For short-haul aviation 280 / 3.6e3 [PWh/Mvkm]
+* For long-haul aviation 333 / 3.6e3 [PWh/Mvkm]
+
     input(technology, energy, level)         'input coefficients'
-    / electricity_grid.electricity.secondary 1
-      appliances.electricity.final           1
-      coal_ppl.coal.final                    2.9
-      gas_ppl.gas.final                      2.3
-      oil_ppl.oil.final                      2.88
-      bio_ppl.biomass.final                  3.59
-      nuclear_ppl.nuclear.primary            1
-      hydro_ppl.hydro.primary                1
-      wind_ppl.wind.primary                  1
-      solar_PV_ppl.solar.final               1
-      coal_nele.coal.final                   1
-      oil_nele.oil.final                     1
-      gas_nele.gas.final                     1
-      bio_nele.biomass.final                 1
-      solar_nele.solar.final                 1
-      oil_nele.aviation_short.final          1
-      oil_nele.aviation_long.final           1
+    / electricity_grid.electricity.secondary    1
+      appliances.electricity.final              1
+      coal_ppl.coal.final                       2.9
+      gas_ppl.gas.final                         2.3
+      oil_ppl.oil.final                         2.88
+      bio_ppl.biomass.final                     3.59
+      nuclear_ppl.nuclear.primary               1
+      hydro_ppl.hydro.primary                   1
+      wind_ppl.wind.primary                     1
+      solar_PV_ppl.solar.final                  1
+      coal_nele.coal.final                      1
+      oil_nele.oil.final                        1
+      gas_nele.gas.final                        1
+      bio_nele.biomass.final                    1
+      solar_nele.solar.final                    1
+      aviation_short_liquid.oil.final           0.0778
+      aviation_short_electric.electricity.final 0.0778  
+      aviation_long_liquid.oil.final            0.0925
+      aviation_long_electric.electricity.final  0.0925
     /
+
+
 
     output(technology, energy, level)        'output coefficients'
     / electricity_grid.electricity.final     0.842
@@ -154,17 +162,23 @@ PARAMETERS
       hydro_pot.hydro.primary                1
       wind_pot.wind.primary                  1
       solar_pot.solar.final                  1
-      aviation_short_liquid.aviation_short.useful   1   
+      aviation_short_liquid.aviation_short.useful   1
+      aviation_short_electric.aviation_short.useful 1
       aviation_long_liquid.aviation_long.useful     1
+      aviation_long_electric.aviation_long.useful  1
     /
 
-    CO2_emission(technology)                 'specific CO2 emission coefficients [tCO2/MWh]'
-    / gas_ppl      0.367
-      coal_ppl     0.854
-      oil_ppl      0.57
-      coal_nele    0.342
-      oil_nele     0.202
-      gas_nele     0.26
+
+
+    CO2_emission(technology)                 'specific CO2 emission coefficients, non-aviation [tCO2/MWh], aviation [tCO2/vkm]'
+    / gas_ppl                   0.367
+      coal_ppl                  0.854
+      oil_ppl                   0.57
+      coal_nele                 0.342
+      oil_nele                  0.202
+      gas_nele                  0.26
+      aviation_short_liquid     0.0123
+      aviation_long_liquid      0.0123
     /
 
     diffusion_up(technology)                  'maximum annual technology capacity growth rate'
@@ -213,12 +227,14 @@ PARAMETERS
       bio_pot      1
     /
 
-    demand(energy, level)                    'demand in base year_all [PWh] for electricity & nonelectricity, and aviation [vkm]'
+    demand(energy, level)                    'demand in base year_all [PWh] for electricity & nonelectricity, and aviation [Gvkm]'
     / electricity.useful        22.60
       nonelectric.useful        85.07
-      aviation_short.useful     1.115
-      aviation_long.useful      1.115 /
-* The original nonelectric.useful was 87.3. Then the demand of aviation (2.23) is subtracted from it to get 85.07 
+      aviation_short.useful     13.096
+      aviation_long.useful      13.096 /
+* The original nonelectric.useful was 87.3 PWh. Then the demand of aviation (2.23 PWh) is subtracted from it to get 85.07 PWh
+* The energy demand of aviation is converted to Mvkm: 2.23 PWh / (280 + 333)/2 MJ/vkm  =  26.192 Gvkm
+* Devide the total aviation demand into two = 26.192 Gvkm / 2 = 13.096 Gvkm
 
     gdp(year_all)                                'GDP [index]'
     / 2020  1
@@ -271,51 +287,36 @@ TABLE
 ;
 
 TABLE
-    vom(technology, year_all)                    'variable cost [$/MWh]'
-                            2020    2030    2040    2050    2060    2070    2080
-    coal_ppl                0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    gas_ppl                 0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    oil_ppl                 0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    bio_ppl                 0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    nuclear_ppl             0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    electricity_grid        47.8    47.8    47.8    47.8    47.8    47.8    47.8
-    coal_nele               0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    gas_nele                0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    oil_nele                0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    bio_nele                0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    solar_nele              0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    other_nele              0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    coal_extr               7.2     7.2     7.2     7.2     7.2     7.2     7.2
-    gas_extr                14.4    14.4    14.4    14.4    14.4    14.4    14.4
-    oil_extr                40.0    40.0    40.0    40.0    40.0    40.0    40.0
-    nuclear_fuel            10.0    10.0    10.0    10.0    10.0    10.0    10.0
-    bio_pot                 18.0    18.0    18.0    18.0    18.0    18.0    18.0
-    hydro_pot               0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    wind_pot                0.0     0.0     0.0     0.0     0.0     0.0     0.0
-    solar_pot               0.0     0.0     0.0     0.0     0.0     0.0     0.0
+    vom(technology, year_all)                    'variable cost, non-aviation [$/MWh], aviation [$/vkm]'
+                                2020        2030       2040       2050       2060       2070       2080
+    coal_ppl                    0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    gas_ppl                     0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    oil_ppl                     0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    bio_ppl                     0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    nuclear_ppl                 0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    electricity_grid            47.8        47.8       47.8       47.8       47.8       47.8       47.8
+    coal_nele                   0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    gas_nele                    0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    oil_nele                    0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    bio_nele                    0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    solar_nele                  0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    other_nele                  0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    coal_extr                   7.2         7.2        7.2        7.2        7.2        7.2        7.2
+    gas_extr                    14.4        14.4       14.4       14.4       14.4       14.4       14.4
+    oil_extr                    40.0        40.0       40.0       40.0       40.0       40.0       40.0
+    nuclear_fuel                10.0        10.0       10.0       10.0       10.0       10.0       10.0
+    bio_pot                     18.0        18.0       18.0       18.0       18.0       18.0       18.0
+    hydro_pot                   0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    wind_pot                    0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    solar_pot                   0.0         0.0        0.0        0.0        0.0        0.0        0.0
+    aviation_short_liquid       16.15       16.15      16.63      16.64      16.64      16.64      16.64      
+    aviation_short_electric     22.26       22.26      22.11      19.61      19.61      19.61      19.61
+    aviation_short_hydrogen     10000       10000      21.89      16.62      16.62      16.62      16.62
+    aviation_long_liquid        21.50       21.50      22.16      22.16      22.16      22.16      22.16   
+    aviation_long_electric      10000       10000      73.68      49.43      49.43      49.43      49.43
+    aviation_long_hydrogen      10000       10000      80.72      44.80      44.80      44.80      44.80
 ;
 
-TABLE
-    non_fuel_cost_aviation(technology, year_all)        '2020$ per vkm'
-                                2020    2030    2040    2050    2060    2070    2080
-    aviation_short_liquid       16.15   16.15   16.63   16.64   16.64   16.64   16.64      
-    aviation_short_electric     22.26   22.26   22.11   19.61   19.61   19.61   19.61
-    aviation_short_hydrogen     10000   10000   21.89   16.62   16.62   16.62   16.62
-    aviation_long_liquid        21.50   21.50   22.16   22.16   22.16   22.16   22.16   
-    aviation_long_electric      10000   10000   73.68   49.43   49.43   49.43   49.43
-    aviation_long_hydrogen      10000   10000   80.72   44.80   44.80   44.80   44.80
-;
-
-TABLE
-    energy_intensity_aviation(technology, year_all)     'MJ per vkm'
-                                2020    2030    2040    2050    2060    2070    2080
-    aviation_short_liquid       280     280     280     280     280     280     280
-    aviation_short_electric     280     280     280     280     280     280     280
-    aviation_short_hydrogen     1000    1000    280     280     280     280     280
-    aviation_long_liquid        333     333     313     313     313     313     313
-    aviation_long_electric      1000    1000    313     313     313     313     313
-    aviation_long_hydrogen      1000    1000    313     313     313     313     313
-;
     
 
 PARAMETER lifetime(technology)               'technical lifetime'
@@ -335,9 +336,15 @@ PARAMETER lifetime(technology)               'technical lifetime'
     bio_nele     20
     solar_nele   20
     other_nele   20
+    aviation_short_liquid       30       
+    aviation_short_electric     30
+    aviation_short_hydrogen     30
+    aviation_long_liquid        30
+    aviation_long_electric      30
+    aviation_long_hydrogen      30
 / ;
 
-PARAMETER hours(technology)                  'full load hours'
+PARAMETER capacity_factor(technology)                  'full load hours per year for non-aviation activities, Gvkm per aircraft per year for aviation activities'
     /
     coal_ppl     7000
     gas_ppl      6000
@@ -354,25 +361,37 @@ PARAMETER hours(technology)                  'full load hours'
     bio_nele     7000
     solar_nele   7000
     other_nele   7000
+    aviation_short_liquid       0.00028
+    aviation_short_electric     0.00028
+    aviation_short_hydrogen     0.00028
+    aviation_long_liquid        0.00028
+    aviation_long_electric      0.00028
+    aviation_long_hydrogen      0.00028
 / ;
+
+* capacity factor vkm / aircraft per year
 
 PARAMETER cost(technology, year_all)                                'total technology costs on activity basis [$/MWh]'
           cost_capacity(technology, year_all)                       'annuity of capacity-related investment costs [$/kW]'
           cost_activity(technology, year_all)                       'activity-related technology costs [$/MWh]'
-          cost_non_fuel_w_energy_intensity(technology, year_all)    'non-fuel costs including energy intensity of the technology [$ / MWh]'
 ;
 
+* inv parameter is specified in $/kW and fom in $/(kW/yr) and CAP_NEW is measured in PW (determined by
+* equation EQ_CAPACITY_BALANCE) which implies that capacity related costs are meansured in trillion $
+* (= $ / 1E3 W * 1E15 W = 1 E12 $) and thus to get to the same units as activity related costs (see below)
+* mutliplication by 1E3 is needed
 cost_capacity(technology, year_all) =  ((inv(technology, year_all) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year_all))) * 1000 $ (lifetime(technology) AND hours(technology)) ;
+                         + fom(technology, year_all))) * 1000 $ (lifetime(technology) AND capacity_factor(technology)) ;
 
+
+* vom parameter is specified in $/MWh and demand (and therefore ACT) in PWh from follows that the
+* COST_ANNUAL and TOTAL_COST variables are measured in billion $ (= $/MWh * PWh = $ / (1E6 Wh) * 1E15 $ = 1E9 $)
 cost_activity(technology, year_all) =  vom(technology, year_all) ;
 
-cost_non_fuel_w_energy_intensity(technology, year_all) =  non_fuel_cost_aviation(technology, year_all) / energy_intensity_aviation(technology, year_all) * 3600
-                                                            $ (non_fuel_cost_aviation(technology, year_all) AND energy_intensity_aviation(technology, year_all));
 
 cost(technology, year_all) =  ((inv(technology, year_all) * ((1 + discount_rate)**(lifetime(technology)) * discount_rate) / ((1 + discount_rate)**(lifetime(technology)) - 1)
-                         + fom(technology, year_all)) / (hours(technology))) $ (lifetime(technology) AND hours(technology))
-                         + vom(technology, year_all) + cost_non_fuel_w_energy_intensity(technology, year_all);
+                         + fom(technology, year_all)) * 1000 / (capacity_factor(technology))) $ (lifetime(technology) AND capacity_factor(technology))
+                         + vom(technology, year_all);
 
 DISPLAY cost, cost_capacity, cost_activity ;
 
@@ -383,7 +402,7 @@ DISPLAY cost, cost_capacity, cost_activity ;
 * definition of variables that are part of the optimization
 
 VARIABLES
-    ACT(technology, year_all)       'technology acitvity in period year_all'
+    ACT(technology, year_all)       'technology acitvity in period year_all, measured in PWh / Mvkm'
     CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
     EMISS(year_all)                 'CO2 emissions in period year_all'
     CUM_EMISS                       'cumulative CO2 emissions'
@@ -415,12 +434,12 @@ EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
     SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
   - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
 
-EQ_CAPACITY_BALANCE(technology, year_all) $ (hours(technology) AND lifetime(technology))..
-    ACT(technology, year_all) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * hours(technology) ;
+EQ_CAPACITY_BALANCE(technology, year_all) $ (capacity_factor(technology) AND lifetime(technology))..
+    ACT(technology, year_all) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * capacity_factor(technology) ;
 
 $ONTEXT
-EQ_CAPACITY_BALANCE(technology, year_all) $ hours(technology)..
-    SUM(year_alias $ ((ORD(year_alias) LE ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias)) * period_length) LE lifetime(technology)), CAP_NEW(technology, year_alias) * MIN((lifetime(technology) - (ORD(year_all) - ORD(year_alias)) * period_length) / period_length, 1)) * hours(technology) =G= ACT(technology, year_all) ;
+EQ_CAPACITY_BALANCE(technology, year_all) $ capacity_factor(technology)..
+    SUM(year_alias $ ((ORD(year_alias) LE ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias)) * period_length) LE lifetime(technology)), CAP_NEW(technology, year_alias) * MIN((lifetime(technology) - (ORD(year_all) - ORD(year_alias)) * period_length) / period_length, 1)) * capacity_factor(technology) =G= ACT(technology, year_all) ;
 $OFFTEXT
 
 EQ_EMISSION(year_all)..
@@ -438,11 +457,9 @@ EQ_SHARE_UP(share, year_all)$(share_up(share))..
 EQ_SHARE_LO(share, year_all)$(share_lo(share))..
                           SUM(technology$tec_share(share, technology), ACT(technology, year_all)) =G= Sum(technology$tec_share_rhs(share, technology), ACT(technology, year_all)) * share_lo(share) ;
 
-EQ_COST_ANNUAL(year_all)..    SUM(technology, ACT(technology, year_all) * (vom(technology, year_all) + cost_non_fuel_w_energy_intensity(technology, year_all))
-                                        + SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias) * cost_capacity(technology, year_alias))
-                                        + ACT(technology, year_all))
-                                
-                    =E= COST_ANNUAL(year_all) ;
+EQ_COST_ANNUAL(year_all)..    SUM(technology, ACT(technology, year_all) * vom(technology, year_all)
+                                        + SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias) * cost_capacity(technology, year_alias)))
+                          =E= COST_ANNUAL(year_all) ;
 
 $ONTEXT
 EQ_COST_ANNUAL(year_all)..
@@ -478,22 +495,26 @@ CAP_NEW.LO(technology, year_all) = 0 ;
 * model calibration and resource constraints
 * ------------------------------------------------------------------------------
 
-ACT.FX('coal_ppl', '2020') = 9.462 ;
-ACT.FX('oil_ppl', '2020') = 0.7 ;
-ACT.FX('solar_PV_ppl', '2020') = 0.839 ;
-ACT.FX('gas_ppl', '2020') = 6.36 ;
-ACT.FX('nuclear_ppl', '2020') = 2.68 ;
-ACT.FX('hydro_ppl', '2020') = 4.36 ;
-ACT.FX('wind_ppl', '2020') = 1.6 ;
-ACT.FX('bio_ppl', '2020') = 0.69 ;
-ACT.LO('other_ppl', '2020') = 0.127 ;
-ACT.FX('coal_nele', '2020') = 10.7 ;
-ACT.FX('oil_nele', '2020') = 43.0 ;
-ACT.FX('gas_nele', '2020') = 18.7 ;
-ACT.FX('bio_nele', '2020') = 10.6 ;
-ACT.LO('other_nele', '2020') = 0.28 ;
+ACT.FX('coal_ppl', '2020') =        9.462 ;
+ACT.FX('oil_ppl', '2020') =         0.7 ;
+ACT.FX('solar_PV_ppl', '2020') =    0.839 ;
+ACT.FX('gas_ppl', '2020') =         6.36 ;
+ACT.FX('nuclear_ppl', '2020') =     2.68 ;
+ACT.FX('hydro_ppl', '2020') =       4.36 ;
+ACT.FX('wind_ppl', '2020') =        1.6 ;
+ACT.FX('bio_ppl', '2020') =         0.69 ;
+ACT.LO('other_ppl', '2020') =       0.127 ;
+ACT.FX('coal_nele', '2020') =       10.7 ;
+ACT.FX('oil_nele', '2020') =        43.0 ;
+ACT.FX('gas_nele', '2020') =        18.7 ;
+ACT.FX('bio_nele', '2020') =        10.6 ;
+ACT.LO('other_nele', '2020') =      0.28 ;
 
 *ACT.LO('coal_ppl', year_all) = 9.462 ;
+
+*EMISS.UP('2040') = 0 ;
+CUM_EMISS.UP = 300
+
 
 $ONTEXT
 * ------------------------------------------------------------------------------
