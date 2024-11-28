@@ -1,5 +1,5 @@
 
---- Job run_energy.gms Start 11/28/24 11:31:49 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
+--- Job run_energy.gms Start 11/28/24 11:40:08 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
 --- Applying:
     C:\GAMS\47\gmsprmNT.txt
 --- GAMS Parameters defined
@@ -24,13 +24,13 @@ GAMS 47.6.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
 --- run_energy.gms(6) 2 Mb
 --- . shared.gms(25) 3 Mb
 --- run_energy.gms(8) 3 Mb
---- . energy_model_world.gms(661) 3 Mb
+--- . energy_model_world.gms(660) 3 Mb
 --- run_energy.gms(22) 3 Mb
---- Starting execution: elapsed 0:00:00.006
---- run_energy.gms(700) 4 Mb
+--- Starting execution: elapsed 0:00:00.007
+--- run_energy.gms(699) 4 Mb
 --- Generating LP model energy_model
---- run_energy.gms(702) 4 Mb
----   409 rows  422 columns  1,490 non-zeroes
+--- run_energy.gms(701) 4 Mb
+---   409 rows  422 columns  1,497 non-zeroes
 --- Range statistics (absolute non-zero finite values)
 --- RHS       [min, max] : [ 1.000E+00, 1.792E+02] - Zero values observed as well
 --- Bound     [min, max] : [ 1.270E-01, 4.300E+01] - Zero values observed as well
@@ -54,24 +54,24 @@ CPXPARAM_MIP_Display                             4
 CPXPARAM_MIP_Pool_Capacity                       0
 CPXPARAM_MIP_Tolerances_AbsMIPGap                0
 Tried aggregator 1 time.
-LP Presolve eliminated 270 rows and 278 columns.
-Aggregator did 26 substitutions.
+LP Presolve eliminated 258 rows and 266 columns.
+Aggregator did 38 substitutions.
 Reduced LP has 112 rows, 118 columns, and 345 nonzeros.
-Presolve time = 0.00 sec. (0.36 ticks)
+Presolve time = 0.00 sec. (0.37 ticks)
 
 Iteration log . . .
-Iteration:     1   Dual objective     =         59794.611013
+Iteration:     1   Dual objective     =         59812.413705
 
 --- LP status (1): optimal.
 --- Cplex Time: 0.00sec (det. 0.68 ticks)
 
 
 Optimal solution found
-Objective:       113679.164609
+Objective:       114259.849540
 
 --- Reading solution for model energy_model
---- Executing after solve: elapsed 0:00:00.154
---- run_energy.gms(708) 4 Mb
+--- Executing after solve: elapsed 0:00:00.047
+--- run_energy.gms(707) 4 Mb
 --- GDX File (execute_unload) C:\projects\ntnu_iam_2024\model\energy_results.gdx
 *** Status: Normal completion
---- Job run_energy.gms Stop 11/28/24 11:31:49 elapsed 0:00:00.154
+--- Job run_energy.gms Stop 11/28/24 11:40:08 elapsed 0:00:00.048
