@@ -31,7 +31,7 @@
       - name: fom
       - name: vom
       - name: lifetime
-      - name: hours
+      - name: capacity_factor
       - name: cost
       - name: cost_capacity
       - name: cost_activity
@@ -117,7 +117,7 @@
     newName: EQ_SHARE_LO_proj_(0,1)
     asParameter: true
 - ExcelWriter:
-    file: C:\projects\ntnu_iam_2024\results\energy_results_export_v01.xlsx
+    file: C:\projects\ntnu_iam_2024\results\energy_results_export_v01_aviation_fossil_electric_bio_limit_no.xlsx
     valueSubstitutions: {
       EPS: EPS,
       INF: INF,
@@ -216,8 +216,8 @@
       - name: lifetime
         range: lifetime!A1
         columnDimension: 0
-      - name: hours
-        range: hours!A1
+      - name: capacity_factor
+        range: capacity_factor!A1
         columnDimension: 0
       - name: cost
         range: cost!A1

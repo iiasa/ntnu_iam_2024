@@ -1,5 +1,5 @@
 
---- Job run_energy.gms Start 11/26/24 10:21:54 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
+--- Job run_energy.gms Start 11/27/24 13:37:38 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
 --- Applying:
     C:\GAMS\47\gmsprmNT.txt
 --- GAMS Parameters defined
@@ -24,18 +24,18 @@ GAMS 47.6.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
 --- run_energy.gms(6) 2 Mb
 --- . shared.gms(25) 3 Mb
 --- run_energy.gms(8) 3 Mb
---- . energy_model_world.gms(638) 3 Mb
+--- . energy_model_world.gms(643) 3 Mb
 --- run_energy.gms(22) 3 Mb
 --- Starting execution: elapsed 0:00:00.006
---- run_energy.gms(677) 4 Mb
+--- run_energy.gms(682) 4 Mb
 --- Generating LP model energy_model
---- run_energy.gms(679) 4 Mb
----   388 rows  415 columns  1,413 non-zeroes
+--- run_energy.gms(684) 4 Mb
+---   388 rows  415 columns  1,441 non-zeroes
 --- Range statistics (absolute non-zero finite values)
 --- RHS       [min, max] : [ 1.000E+00, 1.792E+02] - Zero values observed as well
---- Bound     [min, max] : [ 1.270E-01, 5.000E+02] - Zero values observed as well
+--- Bound     [min, max] : [ 1.270E-01, 4.300E+01] - Zero values observed as well
 --- Matrix    [min, max] : [ 2.800E-04, 4.497E+05]
---- Executing CPLEX (Solvelink=2): elapsed 0:00:00.011
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.012
 
 IBM ILOG CPLEX   47.6.0 c2de9d6d Sep 12, 2024          WEI x86 64bit/MS Window
 
@@ -54,24 +54,24 @@ CPXPARAM_MIP_Display                             4
 CPXPARAM_MIP_Pool_Capacity                       0
 CPXPARAM_MIP_Tolerances_AbsMIPGap                0
 Tried aggregator 1 time.
-LP Presolve eliminated 242 rows and 255 columns.
-Aggregator did 33 substitutions.
-Reduced LP has 112 rows, 127 columns, and 392 nonzeros.
+LP Presolve eliminated 277 rows and 303 columns.
+Aggregator did 26 substitutions.
+Reduced LP has 84 rows, 86 columns, and 281 nonzeros.
 Presolve time = 0.00 sec. (0.35 ticks)
 
 Iteration log . . .
-Iteration:     1   Dual objective     =         59832.367366
+Iteration:     1   Dual objective     =         76396.938839
 
 --- LP status (1): optimal.
---- Cplex Time: 0.00sec (det. 0.69 ticks)
+--- Cplex Time: 0.00sec (det. 0.60 ticks)
 
 
 Optimal solution found
-Objective:       115049.837446
+Objective:       113550.123513
 
 --- Reading solution for model energy_model
 --- Executing after solve: elapsed 0:00:00.044
---- run_energy.gms(685) 4 Mb
+--- run_energy.gms(690) 4 Mb
 --- GDX File (execute_unload) C:\projects\ntnu_iam_2024\model\energy_results.gdx
 *** Status: Normal completion
---- Job run_energy.gms Stop 11/26/24 10:21:54 elapsed 0:00:00.045
+--- Job run_energy.gms Stop 11/27/24 13:37:38 elapsed 0:00:00.045
