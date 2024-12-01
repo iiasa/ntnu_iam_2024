@@ -1,12 +1,12 @@
 
---- Job run_energy.gms Start 11/28/24 11:40:08 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
+--- Job run_energy.gms Start 11/30/24 08:43:03 48.3.0 71b5641f WEX-WEI x86 64bit/MS Windows
 --- Applying:
-    C:\GAMS\47\gmsprmNT.txt
+    C:\GAMS\48\gmsprmNT.txt
 --- GAMS Parameters defined
     Input C:\projects\ntnu_iam_2024\model\run_energy.gms
     PageSize 0
     ScrDir C:\projects\ntnu_iam_2024\model\225a\
-    SysDir C:\GAMS\47\
+    SysDir C:\GAMS\48\
     LogOption 3
     ErrMsg 1
     ErrorLog 99
@@ -14,30 +14,30 @@
     LstTitleLeftAligned 1
 Licensee: Course License                                 S241011|0002AO-GEN
           NTNU, Industrial Ecology and Energy Transitions ProgrammesDCE3800
-          C:\GAMS\47\gamslice.txt
+          C:\GAMS\48\gamslice.txt
           License Admin: Volker Krey, krey@iiasa.ac.at                     
           Course license for use within the course and related course work
-          The evaluation period of the license will expire on Jan 09, 2025
+          The expiration date of time-limited license is Jan 09, 2025
 Processor information: 1 socket(s), 16 core(s), and 22 thread(s) available
-GAMS 47.6.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
+GAMS 48.3.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
 --- Starting compilation
 --- run_energy.gms(6) 2 Mb
 --- . shared.gms(25) 3 Mb
 --- run_energy.gms(8) 3 Mb
---- . energy_model_world.gms(660) 3 Mb
+--- . energy_model_world.gms(675) 3 Mb
 --- run_energy.gms(22) 3 Mb
---- Starting execution: elapsed 0:00:00.007
---- run_energy.gms(699) 4 Mb
+--- Starting execution: elapsed 0:00:00.010
+--- run_energy.gms(714) 4 Mb
 --- Generating LP model energy_model
---- run_energy.gms(701) 4 Mb
----   409 rows  422 columns  1,497 non-zeroes
+--- run_energy.gms(716) 4 Mb
+---   451 rows  429 columns  1,588 non-zeroes
 --- Range statistics (absolute non-zero finite values)
 --- RHS       [min, max] : [ 1.000E+00, 1.792E+02] - Zero values observed as well
 --- Bound     [min, max] : [ 1.270E-01, 4.300E+01] - Zero values observed as well
 --- Matrix    [min, max] : [ 2.800E-04, 4.497E+05]
---- Executing CPLEX (Solvelink=2): elapsed 0:00:00.012
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.020
 
-IBM ILOG CPLEX   47.6.0 c2de9d6d Sep 12, 2024          WEI x86 64bit/MS Window
+IBM ILOG CPLEX   48.3.0 71b5641f Nov 12, 2024          WEI x86 64bit/MS Window
 
 *** This solver runs with a community license.
 --- GMO setup time: 0.00s
@@ -54,24 +54,24 @@ CPXPARAM_MIP_Display                             4
 CPXPARAM_MIP_Pool_Capacity                       0
 CPXPARAM_MIP_Tolerances_AbsMIPGap                0
 Tried aggregator 1 time.
-LP Presolve eliminated 258 rows and 266 columns.
-Aggregator did 38 substitutions.
-Reduced LP has 112 rows, 118 columns, and 345 nonzeros.
-Presolve time = 0.00 sec. (0.37 ticks)
+LP Presolve eliminated 338 rows and 311 columns.
+Aggregator did 24 substitutions.
+Reduced LP has 88 rows, 94 columns, and 293 nonzeros.
+Presolve time = 0.02 sec. (0.37 ticks)
 
 Iteration log . . .
-Iteration:     1   Dual objective     =         59812.413705
+Iteration:     1   Dual objective     =         74896.039935
 
 --- LP status (1): optimal.
---- Cplex Time: 0.00sec (det. 0.68 ticks)
+--- Cplex Time: 0.02sec (det. 0.65 ticks)
 
 
 Optimal solution found
-Objective:       114259.849540
+Objective:       115008.789856
 
 --- Reading solution for model energy_model
---- Executing after solve: elapsed 0:00:00.047
---- run_energy.gms(707) 4 Mb
+--- Executing after solve: elapsed 0:00:00.078
+--- run_energy.gms(722) 4 Mb
 --- GDX File (execute_unload) C:\projects\ntnu_iam_2024\model\energy_results.gdx
 *** Status: Normal completion
---- Job run_energy.gms Stop 11/28/24 11:40:08 elapsed 0:00:00.048
+--- Job run_energy.gms Stop 11/30/24 08:43:03 elapsed 0:00:00.079

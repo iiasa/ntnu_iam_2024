@@ -1,123 +1,32 @@
 - GDXReader:
     file: C:\projects\ntnu_iam_2024\model\energy_results.gdx
     symbols: 
-      - name: t
-      - name: year_all
-      - name: sector
-      - name: PHYSENE
       - name: COST_ANNUAL
-      - name: technology
-      - name: energy
-      - name: level
-      - name: energy_level
-      - name: share
-      - name: tec_share
-      - name: tec_share_rhs
-      - name: map_energy_sector
-      - name: year_all
-      - name: period_length
-      - name: input
-      - name: output
-      - name: CO2_emission
-      - name: diffusion_up
-      - name: startup
-      - name: demand
-      - name: gdp
-      - name: discount_rate
-      - name: beta
-      - name: share_up
-      - name: share_lo
-      - name: inv
-      - name: fom
-      - name: vom
-      - name: lifetime
-      - name: capacity_factor
-      - name: cost
-      - name: cost_capacity
-      - name: cost_activity
       - name: ACT
       - name: CAP_NEW
       - name: EMISS
       - name: CUM_EMISS
       - name: TOTAL_COST
-      - name: EQ_ENERGY_BALANCE
-      - name: EQ_CAPACITY_BALANCE
-      - name: EQ_EMISSION
-      - name: EQ_EMISSION_CUMULATIVE
-      - name: EQ_DIFFUSION_UP
-      - name: EQ_COST_ANNUAL
-      - name: EQ_COST
-      - name: EQ_SHARE_UP
-      - name: EQ_SHARE_LO
 - Projection:
-    name: year_all(0)
-    newName: year_alias(0)
-- Projection:
-    name: PHYSENE(0,1)
-    newName: PHYSENE_proj_(0,1)
-    asParameter: true
-- Projection:
-    name: COST_ANNUAL(0)
+    name: COST_ANNUAL.all(0)
     newName: COST_ANNUAL_proj_(0)
-    asParameter: true
 - Projection:
-    name: ACT(0,1)
+    name: ACT.all(0,1)
     newName: ACT_proj_(0,1)
-    asParameter: true
 - Projection:
-    name: CAP_NEW(0,1)
+    name: CAP_NEW.all(0,1)
     newName: CAP_NEW_proj_(0,1)
-    asParameter: true
 - Projection:
-    name: EMISS(0)
+    name: EMISS.all(0)
     newName: EMISS_proj_(0)
-    asParameter: true
 - Projection:
-    name: CUM_EMISS
+    name: CUM_EMISS.all
     newName: CUM_EMISS_proj_
-    asParameter: true
 - Projection:
-    name: TOTAL_COST
+    name: TOTAL_COST.all
     newName: TOTAL_COST_proj_
-    asParameter: true
-- Projection:
-    name: EQ_ENERGY_BALANCE(0,1,2)
-    newName: EQ_ENERGY_BALANCE_proj_(0,1,2)
-    asParameter: true
-- Projection:
-    name: EQ_CAPACITY_BALANCE(0,1)
-    newName: EQ_CAPACITY_BALANCE_proj_(0,1)
-    asParameter: true
-- Projection:
-    name: EQ_EMISSION(0)
-    newName: EQ_EMISSION_proj_(0)
-    asParameter: true
-- Projection:
-    name: EQ_EMISSION_CUMULATIVE
-    newName: EQ_EMISSION_CUMULATIVE_proj_
-    asParameter: true
-- Projection:
-    name: EQ_DIFFUSION_UP(0,1)
-    newName: EQ_DIFFUSION_UP_proj_(0,1)
-    asParameter: true
-- Projection:
-    name: EQ_COST_ANNUAL(0)
-    newName: EQ_COST_ANNUAL_proj_(0)
-    asParameter: true
-- Projection:
-    name: EQ_COST
-    newName: EQ_COST_proj_
-    asParameter: true
-- Projection:
-    name: EQ_SHARE_UP(0,1)
-    newName: EQ_SHARE_UP_proj_(0,1)
-    asParameter: true
-- Projection:
-    name: EQ_SHARE_LO(0,1)
-    newName: EQ_SHARE_LO_proj_(0,1)
-    asParameter: true
 - ExcelWriter:
-    file: C:\projects\ntnu_iam_2024\results\energy_results_export_v01_aviation_fossil_electric_bio_limit_no.xlsx
+    file: C:\projects\ntnu_iam_2024\results\energy_results_export_v01_aviation_extention_limit_no.xlsx
     valueSubstitutions: {
       EPS: EPS,
       INF: INF,
@@ -126,108 +35,9 @@
       NA: NA
     }
     symbols:
-      - name: t
-        range: t!A1
-        columnDimension: 0
-      - name: year_all
-        range: year_all!A1
-        columnDimension: 0
-      - name: sector
-        range: sector!A1
-        columnDimension: 0
-      - name: PHYSENE_proj_
-        range: PHYSENE!A1
-        columnDimension: 1
       - name: COST_ANNUAL_proj_
         range: COST_ANNUAL!A1
         columnDimension: 1
-      - name: technology
-        range: technology!A1
-        columnDimension: 0
-      - name: energy
-        range: energy!A1
-        columnDimension: 0
-      - name: level
-        range: level!A1
-        columnDimension: 0
-      - name: energy_level
-        range: energy_level!A1
-        columnDimension: 0
-      - name: share
-        range: share!A1
-        columnDimension: 0
-      - name: tec_share
-        range: tec_share!A1
-        columnDimension: 0
-      - name: tec_share_rhs
-        range: tec_share_rhs!A1
-        columnDimension: 0
-      - name: map_energy_sector
-        range: map_energy_sector!A1
-        columnDimension: 0
-      - name: year_alias
-        range: year_alias!A1
-        columnDimension: 0
-      - name: period_length
-        range: period_length!A1
-        columnDimension: 0
-      - name: input
-        range: input!A1
-        columnDimension: 0
-      - name: output
-        range: output!A1
-        columnDimension: 0
-      - name: CO2_emission
-        range: CO2_emission!A1
-        columnDimension: 0
-      - name: diffusion_up
-        range: diffusion_up!A1
-        columnDimension: 0
-      - name: startup
-        range: startup!A1
-        columnDimension: 0
-      - name: demand
-        range: demand!A1
-        columnDimension: 0
-      - name: gdp
-        range: gdp!A1
-        columnDimension: 0
-      - name: discount_rate
-        range: discount_rate!A1
-        columnDimension: 0
-      - name: beta
-        range: beta!A1
-        columnDimension: 0
-      - name: share_up
-        range: share_up!A1
-        columnDimension: 0
-      - name: share_lo
-        range: share_lo!A1
-        columnDimension: 0
-      - name: inv
-        range: inv!A1
-        columnDimension: 0
-      - name: fom
-        range: fom!A1
-        columnDimension: 0
-      - name: vom
-        range: vom!A1
-        columnDimension: 0
-      - name: lifetime
-        range: lifetime!A1
-        columnDimension: 0
-      - name: capacity_factor
-        range: capacity_factor!A1
-        columnDimension: 0
-      - name: cost
-        range: cost!A1
-        columnDimension: 0
-      - name: cost_capacity
-        range: cost_capacity!A1
-        columnDimension: 0
-      - name: cost_activity
-        range: cost_activity!A1
-        columnDimension: 0
       - name: ACT_proj_
         range: ACT!A1
         columnDimension: 1
@@ -242,31 +52,4 @@
         columnDimension: 1
       - name: TOTAL_COST_proj_
         range: TOTAL_COST!A1
-        columnDimension: 1
-      - name: EQ_ENERGY_BALANCE_proj_
-        range: EQ_ENERGY_BALANCE!A1
-        columnDimension: 1
-      - name: EQ_CAPACITY_BALANCE_proj_
-        range: EQ_CAPACITY_BALANCE!A1
-        columnDimension: 1
-      - name: EQ_EMISSION_proj_
-        range: EQ_EMISSION!A1
-        columnDimension: 1
-      - name: EQ_EMISSION_CUMULATIVE_proj_
-        range: EQ_EMISSION_CUMULATIVE!A1
-        columnDimension: 1
-      - name: EQ_DIFFUSION_UP_proj_
-        range: EQ_DIFFUSION_UP!A1
-        columnDimension: 1
-      - name: EQ_COST_ANNUAL_proj_
-        range: EQ_COST_ANNUAL!A1
-        columnDimension: 1
-      - name: EQ_COST_proj_
-        range: EQ_COST!A1
-        columnDimension: 1
-      - name: EQ_SHARE_UP_proj_
-        range: EQ_SHARE_UP!A1
-        columnDimension: 1
-      - name: EQ_SHARE_LO_proj_
-        range: EQ_SHARE_LO!A1
         columnDimension: 1

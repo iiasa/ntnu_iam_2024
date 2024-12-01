@@ -39,7 +39,8 @@ SET technology          'technologies'
       aviation_long_oil         'long-haul aircraft flying with oil (fossil) fuels'
       aviation_long_electric    'long-haul aircraft flying with electricity'
       aviation_long_bio         'long-haul aircraft flying with bio fuels'
-      aviation_bio_to_saf       'Processing biomass into SAF'
+      bio_to_saf                'Processing biomass into SAF'
+      oil_to_jet_a              'Processing oil into aviation jet A fuel'
     /
 
     energy              'energy carriers'
@@ -48,6 +49,7 @@ SET technology          'technologies'
       oil
       biomass
       saf
+      jet_a
       nuclear
       hydro
       wind
@@ -72,6 +74,7 @@ SET technology          'technologies'
       gas.final
       biomass.final
       saf.final
+      jet_a.final
       solar.final
       electricity.secondary
       electricity.final
@@ -120,7 +123,7 @@ PARAMETERS
 
 * --- Input ---
 * For short-haul aviation 280 / 3.6e3 [PWh/Gvkm]
-* For long-haul aviation 333 / 3.6e3 [PWhvkm]
+* For long-haul aviation 333 / 3.6e3 [PWh/Gvkm]
 
     input(technology, energy, level)         'input coefficients'
     / electricity_grid.electricity.secondary    1
@@ -138,13 +141,14 @@ PARAMETERS
       gas_nele.gas.final                        1
       bio_nele.biomass.final                    1
       solar_nele.solar.final                    1
-      aviation_short_oil.oil.final              0.0778
+      aviation_short_oil.jet_a.final              0.0778
       aviation_short_bio.saf.final              0.0778
       aviation_short_electric.electricity.final 0.0778  
-      aviation_long_oil.oil.final               0.0925
+      aviation_long_oil.jet_a.final               0.0925
       aviation_long_bio.saf.final               0.0925
       aviation_long_electric.electricity.final  0.0925
-      aviation_bio_to_saf.biomass.final         1
+      bio_to_saf.biomass.final                  1
+      oil_to_jet_a.oil.final                    1
     /
 
 
@@ -181,8 +185,8 @@ PARAMETERS
       aviation_long_oil.aviation_long.useful        1
       aviation_long_bio.aviation_long.useful        1
       aviation_long_electric.aviation_long.useful   1
-      aviation_bio_to_saf.saf.final                 1
-    /
+      bio_to_saf.saf.final                          1
+      oil_to_jet_a.jet_a.final                      1 /
 
 
 
@@ -220,7 +224,14 @@ PARAMETERS
       oil_extr     0.05
       nuclear_fuel 0.05
       bio_pot      0.05
-    /
+      aviation_short_oil      0.15
+      aviation_short_electric 0.15
+      aviation_short_bio      0.15
+      aviation_long_oil       0.15
+      aviation_long_electric  0.15
+      aviation_long_bio       0.15
+      bio_to_saf              0.15
+      oil_to_jet_a            0.15 /
 
     startup(technology)                  'maximum technology capacity constant addition per period'
     / coal_ppl     1
@@ -243,7 +254,14 @@ PARAMETERS
       oil_extr     1
       nuclear_fuel 1
       bio_pot      1
-    /
+      aviation_short_oil        1
+      aviation_short_electric   1
+      aviation_short_bio        1
+      aviation_long_oil         1  
+      aviation_long_electric    1
+      aviation_long_bio         1
+      bio_to_saf                1
+      oil_to_jet_a              1 /
 
     demand(energy, level)                    'demand in base year_all [PWh] for electricity & nonelectricity, and aviation [Gvkm]'
     / electricity.useful        22.60
@@ -326,7 +344,8 @@ TABLE
     coal_extr                   7.2         7.2        7.2        7.2        7.2        7.2        7.2
     gas_extr                    14.4        14.4       14.4       14.4       14.4       14.4       14.4
     oil_extr                    40.0        40.0       40.0       40.0       40.0       40.0       40.0
-    aviation_bio_to_saf         110         110        110        110        110        110        110
+    oil_to_jet_a                27.8        27.8       27.8       27.8       27.8       27.8       27.8
+    bio_to_saf                  109         109        109        109        109        109        109
     nuclear_fuel                10.0        10.0       10.0       10.0       10.0       10.0       10.0
     bio_pot                     18.0        18.0       18.0       18.0       18.0       18.0       18.0
     hydro_pot                   0.0         0.0        0.0        0.0        0.0        0.0        0.0
@@ -425,7 +444,7 @@ DISPLAY cost, cost_capacity, cost_activity ;
 * definition of variables that are part of the optimization
 
 VARIABLES
-    ACT(technology, year_all)       'technology acitvity in period year_all, measured in PWh / Mvkm'
+    ACT(technology, year_all)       'technology acitvity in period year_all, measured in PWh or Mvkm'
     CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
     EMISS(year_all)                 'CO2 emissions in period year_all'
     CUM_EMISS                       'cumulative CO2 emissions'
@@ -532,11 +551,13 @@ ACT.FX('oil_nele', '2020') =        43.0 ;
 ACT.FX('gas_nele', '2020') =        18.7 ;
 ACT.FX('bio_nele', '2020') =        10.6 ;
 ACT.LO('other_nele', '2020') =      0.28 ;
+ACT.FX('aviation_short_oil', '2020') =  13.096 ;
+ACT.FX('aviation_long_oil', '2020') =   13.096 ;
 
 *ACT.LO('coal_ppl', year_all) = 9.462 ;
 
 *EMISS.UP('2040') = 0 ;
-CUM_EMISS.UP = 300
+CUM_EMISS.UP = 290
 
 
 $ONTEXT
