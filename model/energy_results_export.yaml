@@ -26,7 +26,7 @@
     name: TOTAL_COST.all
     newName: TOTAL_COST_proj_
 - ExcelWriter:
-    file: C:\projects\ntnu_iam_2024\results\energy_results_export_v01_aviation_extention_limit_no.xlsx
+    file: C:\projects\ntnu_iam_2024\results\v02\energy_results_export_v02_aviation_extention_limit_no.xlsx
     valueSubstitutions: {
       EPS: EPS,
       INF: INF,

@@ -33,12 +33,12 @@ SET technology          'technologies'
       other_nele                'non-electric other_ppl'
       electricity_grid          'electricity grid'
       appliances                'electric appliances (other_ppl electricity consumption)'
-      aviation_short_oil        'short-haul aircraft flying with oil (fossil) fuels'
+      aviation_short_jet_a        'short-haul aircraft flying with oil (fossil) fuels'
       aviation_short_electric   'short-haul aircraft flying with electricity'
-      aviation_short_bio        'short-haul aircraft flying with bio fuels'
-      aviation_long_oil         'long-haul aircraft flying with oil (fossil) fuels'
+      aviation_short_saf        'short-haul aircraft flying with bio fuels'
+      aviation_long_jet_a         'long-haul aircraft flying with oil (fossil) fuels'
       aviation_long_electric    'long-haul aircraft flying with electricity'
-      aviation_long_bio         'long-haul aircraft flying with bio fuels'
+      aviation_long_saf         'long-haul aircraft flying with bio fuels'
       bio_to_saf                'Processing biomass into SAF'
       oil_to_jet_a              'Processing oil into aviation jet A fuel'
     /
@@ -85,13 +85,13 @@ SET technology          'technologies'
 
     share      'technology share set'
     / coal_nonelectric
-      share_aviation_short_bio
-      share_aviation_long_bio /
+      share_aviation_short_saf
+      share_aviation_long_saf /
 
     tec_share(share, technology)      'technology share left hand side'
     / coal_nonelectric.coal_nele
-      share_aviation_short_bio.aviation_short_bio
-      share_aviation_long_bio.aviation_long_bio  /
+      share_aviation_short_saf.aviation_short_saf
+      share_aviation_long_saf.aviation_long_saf  /
 
     tec_share_rhs(share, technology)  'technology share right hand side'
     / coal_nonelectric.coal_nele
@@ -100,8 +100,8 @@ SET technology          'technologies'
       coal_nonelectric.bio_nele
       coal_nonelectric.solar_nele
       coal_nonelectric.other_nele
-      share_aviation_short_bio.aviation_short_oil
-      share_aviation_long_bio.aviation_long_oil
+      share_aviation_short_saf.aviation_short_jet_a
+      share_aviation_long_saf.aviation_long_jet_a
       /
 
     map_energy_sector(energy, level, sector)
@@ -141,11 +141,11 @@ PARAMETERS
       gas_nele.gas.final                        1
       bio_nele.biomass.final                    1
       solar_nele.solar.final                    1
-      aviation_short_oil.jet_a.final              0.0778
-      aviation_short_bio.saf.final              0.0778
+      aviation_short_jet_a.jet_a.final          0.0778
+      aviation_short_saf.saf.final              0.0778
       aviation_short_electric.electricity.final 0.0778  
-      aviation_long_oil.jet_a.final               0.0925
-      aviation_long_bio.saf.final               0.0925
+      aviation_long_jet_a.jet_a.final           0.0925
+      aviation_long_saf.saf.final               0.0925
       aviation_long_electric.electricity.final  0.0925
       bio_to_saf.biomass.final                  1
       oil_to_jet_a.oil.final                    1
@@ -179,11 +179,11 @@ PARAMETERS
       hydro_pot.hydro.primary                1
       wind_pot.wind.primary                  1
       solar_pot.solar.final                  1
-      aviation_short_oil.aviation_short.useful      1
-      aviation_short_bio.aviation_short.useful      1
+      aviation_short_jet_a.aviation_short.useful    1
+      aviation_short_saf.aviation_short.useful      1
       aviation_short_electric.aviation_short.useful 1
-      aviation_long_oil.aviation_long.useful        1
-      aviation_long_bio.aviation_long.useful        1
+      aviation_long_jet_a.aviation_long.useful      1
+      aviation_long_saf.aviation_long.useful        1
       aviation_long_electric.aviation_long.useful   1
       bio_to_saf.saf.final                          1
       oil_to_jet_a.jet_a.final                      1 /
@@ -197,10 +197,10 @@ PARAMETERS
       coal_nele                 0.342
       oil_nele                  0.202
       gas_nele                  0.26
-      aviation_short_oil        0.0123
-      aviation_long_oil         0.0123
-      aviation_short_bio        0.000983
-      aviation_long_bio         0.000983
+      aviation_short_jet_a      0.0123
+      aviation_long_jet_a       0.0123
+      aviation_short_saf        0.000983
+      aviation_long_saf         0.000983
     /
 
     diffusion_up(technology)                  'maximum annual technology capacity growth rate'
@@ -224,12 +224,12 @@ PARAMETERS
       oil_extr     0.05
       nuclear_fuel 0.05
       bio_pot      0.05
-      aviation_short_oil      0.15
+      aviation_short_jet_a    0.15
       aviation_short_electric 0.15
-      aviation_short_bio      0.15
-      aviation_long_oil       0.15
+      aviation_short_saf      0.15
+      aviation_long_jet_a     0.15
       aviation_long_electric  0.15
-      aviation_long_bio       0.15
+      aviation_long_saf       0.15
       bio_to_saf              0.15
       oil_to_jet_a            0.15 /
 
@@ -254,12 +254,12 @@ PARAMETERS
       oil_extr     1
       nuclear_fuel 1
       bio_pot      1
-      aviation_short_oil        1
+      aviation_short_jet_a      1
       aviation_short_electric   1
-      aviation_short_bio        1
-      aviation_long_oil         1  
+      aviation_short_saf        1
+      aviation_long_jet_a       1  
       aviation_long_electric    1
-      aviation_long_bio         1
+      aviation_long_saf         1
       bio_to_saf                1
       oil_to_jet_a              1 /
 
@@ -289,8 +289,8 @@ PARAMETERS
 
     share_up(share)                          'upper share of techology groups relative to reference group'
     / coal_nonelectric          0.4
-      share_aviation_short_bio  1.0
-      share_aviation_long_bio   1.0 /
+      share_aviation_short_saf  1.0
+      share_aviation_long_saf   1.0 /
 
     share_lo(share)                          'lower share of techology groups relative to reference group'
     / coal_nonelectric 0 /
@@ -318,7 +318,7 @@ TABLE
     oil_ppl                   25      25      25      25      25      25      25
     bio_ppl                   60      60      60      60      60      60      60
     hydro_ppl                 30      30      30      30      30      30      30
-    wind_ppl                  40      40      40      40      40      40      20
+    wind_ppl                  40      40      40      40      40      40      40
     solar_PV_ppl              25      25      25      25      25      25      25
     nuclear_ppl              100     100     100     100     100     100     100
     other_ppl                 25      25      25      25      25      25      25
@@ -345,17 +345,17 @@ TABLE
     gas_extr                    14.4        14.4       14.4       14.4       14.4       14.4       14.4
     oil_extr                    40.0        40.0       40.0       40.0       40.0       40.0       40.0
     oil_to_jet_a                27.8        27.8       27.8       27.8       27.8       27.8       27.8
-    bio_to_saf                  109         109        109        109        109        109        109
+    bio_to_saf                  199         199        199        199        199        199        199
     nuclear_fuel                10.0        10.0       10.0       10.0       10.0       10.0       10.0
     bio_pot                     18.0        18.0       18.0       18.0       18.0       18.0       18.0
     hydro_pot                   0.0         0.0        0.0        0.0        0.0        0.0        0.0
     wind_pot                    0.0         0.0        0.0        0.0        0.0        0.0        0.0
     solar_pot                   0.0         0.0        0.0        0.0        0.0        0.0        0.0
-    aviation_short_oil          16.15       16.15      16.63      16.64      16.64      16.64      16.64      
-    aviation_short_bio          16.15       16.15      16.63      16.64      16.64      16.64      16.64      
+    aviation_short_jet_a        16.15       16.15      16.63      16.64      16.64      16.64      16.64      
+    aviation_short_saf          16.15       16.15      16.63      16.64      16.64      16.64      16.64      
     aviation_short_electric     22.26       22.26      21.28      19.61      19.61      19.61      19.61
-    aviation_long_oil           21.50       21.50      22.16      22.16      22.16      22.16      22.16   
-    aviation_long_bio           21.50       21.50      22.16      22.16      22.16      22.16      22.16   
+    aviation_long_jet_a         21.50       21.50      22.16      22.16      22.16      22.16      22.16   
+    aviation_long_saf           21.50       21.50      22.16      22.16      22.16      22.16      22.16   
     aviation_long_electric      10000       10000      65.60      49.43      49.43      49.43      49.43
 ;
 
@@ -378,15 +378,15 @@ PARAMETER lifetime(technology)               'technical lifetime'
     bio_nele     20
     solar_nele   20
     other_nele   20
-    aviation_short_oil          30
-    aviation_short_bio          30       
+    aviation_short_jet_a        30
+    aviation_short_saf          30       
     aviation_short_electric     30
-    aviation_long_oil           30
-    aviation_long_bio           30
+    aviation_long_jet_a         30
+    aviation_long_saf           30
     aviation_long_electric      30
 / ;
 
-PARAMETER capacity_factor(technology)                  'full load hours per year for non-aviation activities, Gvkm per aircraft per year for aviation activities'
+PARAMETER capacity_factor(technology)          'full load hours per year for non-aviation activities, Gvkm per aircraft per year for aviation activities'
     /
     coal_ppl     7000
     gas_ppl      6000
@@ -403,19 +403,19 @@ PARAMETER capacity_factor(technology)                  'full load hours per year
     bio_nele     7000
     solar_nele   7000
     other_nele   7000
-    aviation_short_oil          0.00028
-    aviation_short_bio          0.00028
+    aviation_short_jet_a        0.00028
+    aviation_short_saf          0.00028
     aviation_short_electric     0.00028
-    aviation_long_oil           0.00028
-    aviation_long_bio           0.00028
+    aviation_long_jet_a         0.00028
+    aviation_long_saf           0.00028
     aviation_long_electric      0.00028
 / ;
 
 * capacity factor vkm / aircraft per year
 
-PARAMETER cost(technology, year_all)                                'total technology costs on activity basis [$/MWh]'
-          cost_capacity(technology, year_all)                       'annuity of capacity-related investment costs [$/kW]'
-          cost_activity(technology, year_all)                       'activity-related technology costs [$/MWh]'
+PARAMETER cost(technology, year_all)                'total technology costs on activity basis [$/MWh]'
+          cost_capacity(technology, year_all)       'annuity of capacity-related investment costs [$/kW]'
+          cost_activity(technology, year_all)       'activity-related technology costs [$/MWh]'
 ;
 
 * inv parameter is specified in $/kW and fom in $/(kW/yr) and CAP_NEW is measured in PW (determined by
@@ -551,13 +551,13 @@ ACT.FX('oil_nele', '2020') =        43.0 ;
 ACT.FX('gas_nele', '2020') =        18.7 ;
 ACT.FX('bio_nele', '2020') =        10.6 ;
 ACT.LO('other_nele', '2020') =      0.28 ;
-ACT.FX('aviation_short_oil', '2020') =  13.096 ;
-ACT.FX('aviation_long_oil', '2020') =   13.096 ;
+ACT.FX('aviation_short_jet_a', '2020') =  13.096 ;
+ACT.FX('aviation_long_jet_a', '2020') =   13.096 ;
 
 *ACT.LO('coal_ppl', year_all) = 9.462 ;
 
 *EMISS.UP('2040') = 0 ;
-CUM_EMISS.UP = 290
+*CUM_EMISS.UP = 1000
 
 
 $ONTEXT

@@ -3,14 +3,16 @@ import matplotlib.pyplot as plt
 
 def main():
 
-    path_to_file = 'C:/projects/ntnu_iam_2024/results/results_act.csv'
-    path_to_output_folder = 'C:/projects/ntnu_iam_2024/figures/'
+    results_version = 'v02'
+
+    path_to_file = f'C:/projects/ntnu_iam_2024/results/{results_version}/results_act_{results_version}.csv'
+    path_to_output_folder = f'C:/projects/ntnu_iam_2024/results/{results_version}/figures/'
 
     sector_electricity = ['coal_ppl', 'gas_ppl','oil_ppl','bio_ppl','hydro_ppl','wind_ppl','solar_PV_ppl','nuclear_ppl','other_ppl']
     sector_non_electric = ['coal_nele','oil_nele' ,'gas_nele','bio_nele','solar_nele','other_nele']
     sector_extraction = ['coal_extr', 'gas_extr', 'oil_extr', 'nuclear_fuel', 'bio_pot', 'hydro_pot', 'wind_pot', 'solar_pot']
-    sector_aviation_short = ['aviation_short_oil', 'aviation_short_bio', 'aviation_short_electric']
-    sector_aviation_long = ['aviation_long_oil', 'aviation_long_bio', 'aviation_long_electric']
+    sector_aviation_short = ['aviation_short_jet_a', 'aviation_short_saf', 'aviation_short_electric']
+    sector_aviation_long = ['aviation_long_jet_a', 'aviation_long_saf', 'aviation_long_electric']
 
     sectors = [sector_electricity, sector_non_electric, sector_extraction, sector_aviation_short, sector_aviation_long]
     sector_names = ['Power plants', 'Non-electric', 'Extraction or potential', 'Short-haul aviation', 'Long-haul aviation']
@@ -19,7 +21,7 @@ def main():
 
     sector_electricity_colors = {
         'coal': 'k',
-        'oil': 'y',
+        'oil': 'gray',
         'gas': 'r',
         'bio': 'g',
         'hydro':'b',
@@ -31,7 +33,7 @@ def main():
 
     sector_non_electric_colors = {
         'coal':'k',
-        'oil':'y',
+        'oil':'gray',
         'gas':'r',
         'bio':'g',
         'solar':'darkorange',
@@ -40,7 +42,7 @@ def main():
 
     sector_extraction_colors = {
         'coal':'k',
-        'oil': 'y',
+        'oil': 'gray',
         'gas':'r',
         'bio':'g',
         'hydro':'b',
@@ -50,13 +52,13 @@ def main():
     }
 
     sector_aviation_short_colors = {
-        'oil':'k',
-        'bio':'g',
+        'jet_a':'gray',
+        'saf':'g',
         'electric':'gold'}
 
     sector_aviation_long_colors = {
-        'oil':'k',
-        'bio':'g',
+        'jet_a':'gray',
+        'saf':'g',
         'electric':'gold'}
 
     sector_colors = [sector_electricity_colors, sector_non_electric_colors, sector_extraction_colors, sector_aviation_short_colors, sector_aviation_long_colors]
@@ -94,13 +96,13 @@ def main():
     }
 
     sector_aviation_short_legends = {
-        'aviation_short_oil':'oil',
-        'aviation_short_bio':'bio',
+        'aviation_short_jet_a':'jet_a',
+        'aviation_short_saf':'saf',
         'aviation_short_electric':'electric'}
 
     sector_aviation_long_legends = {
-        'aviation_long_oil':'oil',
-        'aviation_long_bio':'bio',
+        'aviation_long_jet_a':'jet_a',
+        'aviation_long_saf':'saf',
         'aviation_long_electric':'electric'}
 
     sector_legends = [sector_electricity_legends, sector_non_electric_legends, sector_extraction_legends, sector_aviation_short_legends, sector_aviation_long_legends]
