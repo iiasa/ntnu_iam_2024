@@ -103,5 +103,5 @@ solve energy_climate using NLP minimize TOTAL_COST ;
 * reporting
 * ------------------------------------------------------------------------------
 
-execute_unload "energy_climate_results_base_Al.gdx"
+execute_unload "energy_climate_results_base.gdx"
 

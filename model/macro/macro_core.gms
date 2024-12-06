@@ -89,7 +89,6 @@ POSITIVE VARIABLES
     Y(year_all)                Production in period year
     YN(year_all)               New production vintage in period year
 
-    PHYSENE(sector, year_all)  Physical end-use service or commodity use
     PRODENE(sector, year_all)  Value of end-use services or commodities in the production function
     NEWENE(sector, year_all)   New end-use service or commodity (production function value)
 
@@ -98,13 +97,13 @@ POSITIVE VARIABLES
 ;
 
 VARIABLES
-    UTILITY                          Utility function (discounted log of consumption)
+    UTILITY                    Utility function (discounted log of consumption)
     EC(year_all)               System costs (Trillion $) based on MESSAGE model run
 ;
 
 Variables
 * auxiliary variables for demand, prices, costs and GDP (for reporting when MESSAGE is run with MACRO)
-    GDP_macro(year_all)               gross domestic product (GDP) in market exchange rates for MACRO reporting
+    GDP_MACRO(year_all)               gross domestic product (GDP) in market exchange rates for MACRO reporting
 ;
 
 * ------------------------------------------------------------------------------
@@ -125,6 +124,8 @@ EQUATIONS
     ENERGY_SUPPLY(sector, *)        Supply of end-use services or commodities
 
     COST_ENERGY(year_all)           system costs approximation based on MESSAGE input
+    COST_ENERGY_LINKED(year_all)    system costs of hard-linked model version
+
     TERMINAL_CONDITION(year_all)    Terminal condition
 ;
 
@@ -290,16 +291,16 @@ PRODENE(sector, year) * aeei_factor(sector, year)
 ***
 
 COST_ENERGY(year) $ (NOT macro_base_period(year))..
-EC(year) =E= COST_ANNUAL(year)/1000
-;
-$onText
-COST_ENERGY(year) $ (NOT macro_base_period(year))..
 EC(year) =E=
-(total_cost(year)
+(cost_MESSAGE(year)
 + SUM(sector, eneprice(sector, year) * (PHYSENE(sector, year) - enestart(sector, year)))
 + SUM(sector, eneprice(sector, year) / enestart(sector, year) * (PHYSENE(sector, year) - enestart(sector, year)) * (PHYSENE(sector, year) - enestart(sector, year))))
 ;
-$offText
+
+COST_ENERGY_LINKED(year) $ (NOT macro_base_period(year))..
+EC(year) =E= COST_ANNUAL(year) / 1000
+;
+
 ***
 * Equation TERMINAL_CONDITION
 * ---------------------------------

@@ -33,6 +33,7 @@ SET technology          'technologies'
       other_nele        'non-electric other_ppl'
       electricity_grid  'electricity grid'
       appliances        'electric appliances (other_ppl electricity consumption)'
+      Al_prod           'Aluminum production'
     /
 
     energy              'energy carriers'
@@ -45,7 +46,9 @@ SET technology          'technologies'
       wind
       solar
       electricity
-      nonelectric /
+      nonelectric
+      aluminum
+    /
 
     level               'energy level'
     / primary
@@ -65,16 +68,9 @@ SET technology          'technologies'
       electricity.secondary
       electricity.final
       electricity.useful
-      nonelectric.useful /
-
-    year_all                'periods'
-    / 2020
-      2030
-      2040
-      2050
-      2060
-      2070
-      2080 /
+      nonelectric.useful
+      aluminum.final
+    /
 
     share      'technology share set'
     / coal_nonelectric /
@@ -89,7 +85,13 @@ SET technology          'technologies'
       coal_nonelectric.bio_nele
       coal_nonelectric.solar_nele
       coal_nonelectric.other_nele /
+
+    map_energy_sector(energy, level, sector)
+    / electricity.useful.ELEC
+      nonelectric.useful.NELE /
 ;
+
+
 
 ALIAS (year_all, year_alias) ;
 
@@ -101,7 +103,7 @@ PARAMETERS
     period_length
     / 10 /
 
-    input(technology, energy, level)         'input coefficients'
+    input(technology, energy, level)         'input coefficients - MW/MW, MW/tAl/h' 
     / electricity_grid.electricity.secondary 1
       appliances.electricity.final           1
       coal_ppl.coal.final                    2.9
@@ -117,9 +119,10 @@ PARAMETERS
       gas_nele.gas.final                     1
       bio_nele.biomass.final                 1
       solar_nele.solar.final                 1
+      Al_prod.electricity.final              14
     /
 
-    output(technology, energy, level)        'output coefficients'
+    output(technology, energy, level)        'output coefficients - MW/MW, t Al/h / t Al/h'
     / electricity_grid.electricity.final     0.842
       appliances.electricity.useful          1
       coal_ppl.electricity.secondary         1
@@ -145,15 +148,17 @@ PARAMETERS
       hydro_pot.hydro.primary                1
       wind_pot.wind.primary                  1
       solar_pot.solar.final                  1
+      Al_prod.aluminum.final                 1
     /
 
-    CO2_emission(technology)                 'specific CO2 emission coefficients [tCO2/MWh]'
+    CO2_emission(technology)                 'specific CO2 emission coefficients [tCO2/MWh]  or [tCO2/tAl]'
     / gas_ppl      0.367
       coal_ppl     0.854
       oil_ppl      0.57
       coal_nele    0.342
       oil_nele     0.202
       gas_nele     0.26
+      Al_prod      15
     /
 
     diffusion_up(technology)                  'maximum annual technology capacity growth rate'
@@ -177,6 +182,7 @@ PARAMETERS
       oil_extr     0.05
       nuclear_fuel 0.05
       bio_pot      0.05
+      Al_prod      0.05
     /
 
     startup(technology)                  'maximum technology capacity constant addition per period'
@@ -200,11 +206,14 @@ PARAMETERS
       oil_extr     1
       nuclear_fuel 1
       bio_pot      1
+      Al_prod      1
     /
 
-    demand(energy, level)                    'demand in base year_all [PWh]'
+    demand(energy, level)                    'demand in base year_all [PWh]/[Gt virgin Al]'
     / electricity.useful        22.60
-      nonelectric.useful        87.3 /
+      nonelectric.useful        87.3
+*      aluminum.final            0.065
+    /
 
     gdp(year_all)                                'GDP [index]'
     / 2020  1
@@ -243,6 +252,20 @@ TABLE
 ;
 
 TABLE
+    inv_Al(technology, year_all)                    'investment cost [kgAl/kW]'
+                            2020    2030    2040    2050    2060    2070    2080
+    coal_ppl                   1       1       1       1       1       1       1
+    gas_ppl                    1       1       1       1       1       1       1
+    oil_ppl                    1       1       1       1       1       1       1
+    hydro_ppl                  1       1       1       1       1       1       1
+    bio_ppl                    1       1       1       1       1       1       1
+    wind_ppl                   1       1       1       1       1       1       1
+    solar_PV_ppl               1       1       1       1       1       1       1
+    nuclear_ppl                1       1       1       1       1       1       1
+    other_ppl                  1       1       1       1       1       1       1
+;
+
+TABLE
     fom(technology, year_all)                    'fixed operation and maintenance cost [$/(kW/yr)]'
                             2020    2030    2040    2050    2060    2070    2080
     coal_ppl                  40      40      40      40      40      40      40
@@ -257,7 +280,7 @@ TABLE
 ;
 
 TABLE
-    vom(technology, year_all)                    'variable cost [$/MWh]'
+    vom(technology, year_all)                    'variable cost [$/MWh] or $/t'
                             2020    2030    2040    2050    2060    2070    2080
     coal_ppl                0.0     0.0     0.0     0.0     0.0     0.0     0.0
     gas_ppl                 0.0     0.0     0.0     0.0     0.0     0.0     0.0
@@ -279,6 +302,7 @@ TABLE
     hydro_pot               0.0     0.0     0.0     0.0     0.0     0.0     0.0
     wind_pot                0.0     0.0     0.0     0.0     0.0     0.0     0.0
     solar_pot               0.0     0.0     0.0     0.0     0.0     0.0     0.0
+    Al_prod                 1000.0  1000.0  1000.0  1000.0  1000.0  1000.0  1000.0
 ;
 
 PARAMETER lifetime(technology)               'technical lifetime'
@@ -298,6 +322,7 @@ PARAMETER lifetime(technology)               'technical lifetime'
     bio_nele     20
     solar_nele   20
     other_nele   20
+    Al_prod      20
 / ;
 
 PARAMETER hours(technology)                  'full load hours'
@@ -317,6 +342,7 @@ PARAMETER hours(technology)                  'full load hours'
     bio_nele     7000
     solar_nele   7000
     other_nele   7000
+    Al_prod      8640
 / ;
 
 PARAMETER cost(technology, year_all)                 'total technology costs on activity basis [$/MWh]'
@@ -345,9 +371,8 @@ VARIABLES
     ACT(technology, year_all)       'technology acitvity in period year_all'
     CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
     EMISS(year_all)                 'CO2 emissions in period year_all'
-    CUM_EMISS                   'cumulative CO2 emissions'
-    COST_ANNUAL(year_all)           'costs per year_all'
-    TOTAL_COST                  'total discounted systems costs'
+    CUM_EMISS                       'cumulative CO2 emissions'
+    TOTAL_COST                      'total discounted systems costs'
 ;
 
 * declaration of equations
@@ -365,14 +390,16 @@ EQUATIONS
 ;
 
 * definition of equations
+$ONTEXT
+EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
+    SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
+  - SUM(sector $ map_energy_sector(energy, level, sector), PHYSENE(sector, year_all)) =G= 0 ;
+$OFFTEXT
+
 EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
     SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
   - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
-$onText
-EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
-    SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
-  - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
-$offText
+
 EQ_CAPACITY_BALANCE(technology, year_all) $ (hours(technology) AND lifetime(technology))..
     ACT(technology, year_all) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * hours(technology) ;
 
@@ -413,7 +440,17 @@ EQ_COST..
 
 * definition of model (keyword 'all' means that all equations defined above are part of the model)
 
-MODEL simple / all / ;
+MODEL energy_model /
+    EQ_ENERGY_BALANCE
+    EQ_CAPACITY_BALANCE
+    EQ_EMISSION
+    EQ_EMISSION_CUMULATIVE
+    EQ_DIFFUSION_UP
+    EQ_COST_ANNUAL
+    EQ_COST
+    EQ_SHARE_UP
+    EQ_SHARE_LO
+/ ;
 
 * constraint on individual variables
 
@@ -437,21 +474,12 @@ ACT.FX('coal_nele', '2020') = 10.7 ;
 ACT.FX('oil_nele', '2020') = 43.0 ;
 ACT.FX('gas_nele', '2020') = 18.7 ;
 ACT.FX('bio_nele', '2020') = 10.6 ;
+*ACT.FX('Al_prod', '2020') = 0.065; 
 ACT.LO('other_nele', '2020') = 0.28 ;
 
 *ACT.LO('coal_ppl', year_all) = 9.462 ;
 
-* ------------------------------------------------------------------------------
-* model solution
-* ------------------------------------------------------------------------------
-
-OPTION LP = CPLEX ;
-
-*SOLVE simple using LP minimize TOTAL_COST ;
 $ONTEXT
-$onText
-SOLVE simple using LP minimize TOTAL_COST ;
-
 * ------------------------------------------------------------------------------
 * export of results in GDX format
 * ------------------------------------------------------------------------------
@@ -570,4 +598,4 @@ LOOP(year_all,
         PUT year_all.tl,
             EQ_ENERGY_BALANCE.M('electricity', 'final', year_all) /
 ) ;
-$offText
+$OFFTEXT
