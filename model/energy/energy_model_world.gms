@@ -33,7 +33,10 @@ SET technology          'technologies'
       other_nele        'non-electric other_ppl'
       electricity_grid  'electricity grid'
       appliances        'electric appliances (other_ppl electricity consumption)'
-      Al_prod           'Aluminum production'
+      Al_extr           'Bauxite mining & refining to Alumina'
+      Al_smelt          'Smelting of Alumina - Hall Heroult'
+      Al_smelt_inert    'Smelting of Alumina - inert Anodes'
+      Al_prod           'Production of final products'
     /
 
     energy              'energy carriers'
@@ -50,7 +53,7 @@ SET technology          'technologies'
       aluminum
     /
 
-    level               'energy level'
+    level               'energy level/Al level (prim = Bauxite, secondary = raw, final = product)'
     / primary
       secondary
       final
@@ -69,6 +72,8 @@ SET technology          'technologies'
       electricity.final
       electricity.useful
       nonelectric.useful
+      aluminum.primary
+      aluminum.secondary
       aluminum.final
     /
 
@@ -119,7 +124,13 @@ PARAMETERS
       gas_nele.gas.final                     1
       bio_nele.biomass.final                 1
       solar_nele.solar.final                 1
-      Al_prod.electricity.final              14
+      Al_extr.oil.final                      5
+      Al_smelt.aluminum.primary              1.93
+      Al_smelt_inert.aluminum.primary        1.93
+      Al_smelt.electricity.final             15
+      Al_smelt_inert.electricity.final       21
+      Al_prod.aluminum.secondary             1
+      Al_prod.electricity.final              1.5
     /
 
     output(technology, energy, level)        'output coefficients - MW/MW, t Al/h / t Al/h'
@@ -148,7 +159,11 @@ PARAMETERS
       hydro_pot.hydro.primary                1
       wind_pot.wind.primary                  1
       solar_pot.solar.final                  1
+      Al_extr.aluminum.primary               1
+      Al_smelt.aluminum.secondary            1
+      Al_smelt_inert.aluminum.secondary      1
       Al_prod.aluminum.final                 1
+      
     /
 
     CO2_emission(technology)                 'specific CO2 emission coefficients [tCO2/MWh]  or [tCO2/tAl]'
@@ -158,7 +173,8 @@ PARAMETERS
       coal_nele    0.342
       oil_nele     0.202
       gas_nele     0.26
-      Al_prod      15
+      Al_extr      2.6
+      Al_smelt     1.22
     /
 
     diffusion_up(technology)                  'maximum annual technology capacity growth rate'
@@ -182,6 +198,9 @@ PARAMETERS
       oil_extr     0.05
       nuclear_fuel 0.05
       bio_pot      0.05
+      Al_extr      0.05
+      Al_smelt     0.05
+      Al_smelt_inert 0.05
       Al_prod      0.05
     /
 
@@ -206,13 +225,16 @@ PARAMETERS
       oil_extr     1
       nuclear_fuel 1
       bio_pot      1
+      Al_extr      1
+      Al_smelt     1
+      Al_smelt_inert 1
       Al_prod      1
     /
 
     demand(energy, level)                    'demand in base year_all [PWh]/[Gt virgin Al]'
     / electricity.useful        22.60
       nonelectric.useful        87.3
-*      aluminum.final            0.065
+      aluminum.final            0.065
     /
 
     gdp(year_all)                                'GDP [index]'
@@ -302,6 +324,9 @@ TABLE
     hydro_pot               0.0     0.0     0.0     0.0     0.0     0.0     0.0
     wind_pot                0.0     0.0     0.0     0.0     0.0     0.0     0.0
     solar_pot               0.0     0.0     0.0     0.0     0.0     0.0     0.0
+    Al_extr                 500     500     500     500     500     500     500
+    Al_smelt                2000.0  2000.0  2000.0  2000.0  2000.0  2000.0  2000.0
+    Al_smelt_inert          2000.0  2000.0  2000.0  2000.0  2000.0  2000.0  2000.0
     Al_prod                 1000.0  1000.0  1000.0  1000.0  1000.0  1000.0  1000.0
 ;
 
@@ -322,6 +347,8 @@ PARAMETER lifetime(technology)               'technical lifetime'
     bio_nele     20
     solar_nele   20
     other_nele   20
+    Al_smelt     20
+    Al_smelt_inert 20
     Al_prod      20
 / ;
 
@@ -342,6 +369,8 @@ PARAMETER hours(technology)                  'full load hours'
     bio_nele     7000
     solar_nele   7000
     other_nele   7000
+    Al_smelt     8640
+    Al_smelt_inert 8640
     Al_prod      8640
 / ;
 
@@ -370,6 +399,7 @@ DISPLAY cost, cost_capacity, cost_activity ;
 VARIABLES
     INV_DEMAND(energy, level, year_all)
     ACT_DEMAND(energy, level, year_all)
+    TOT_DEMAND(energy, level, year_all)
     ACT(technology, year_all)       'technology acitvity in period year_all'
     CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
     EMISS(year_all)                 'CO2 emissions in period year_all'
@@ -383,6 +413,7 @@ VARIABLES
 EQUATIONS
     EQ_INV_DEMAND
     EQ_ACT_DEMAND
+    EQ_TOT_DEMAND
     EQ_ENERGY_BALANCE          'supply > demand equation for energy carrier and level combination'
     EQ_CAPACITY_BALANCE        'capacity equation for technologies'
     EQ_EMISSION                'summation of CO2 emissions'
@@ -409,9 +440,16 @@ EQ_ACT_DEMAND(energy, level, year_all) $ energy_level(energy, level)..
     demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta
     =E= ACT_DEMAND(energy, level, year_all);
 
+EQ_TOT_DEMAND(energy, level, year_all) $ energy_level(energy, level)..
+    demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta
+    + sum(technology, 1e-6*CAP_NEW(technology, year_all)*inv_Al(technology, energy, level))
+    =E= TOT_DEMAND(energy, level, year_all);
+
 EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
     SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
-  - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta =G= 0 ;
+    - demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta
+    - sum(technology, 0*1e-6*CAP_NEW(technology, year_all)*inv_Al(technology, energy, level))
+    =G= 0 ;
 
 EQ_CAPACITY_BALANCE(technology, year_all) $ (hours(technology) AND lifetime(technology))..
     ACT(technology, year_all) =L= SUM(year_alias $ ((ORD(year_alias) le ORD(year_all)) AND ((ORD(year_all) - ORD(year_alias) + 1) * period_length le lifetime(technology))), CAP_NEW(technology, year_alias)) * hours(technology) ;
@@ -493,7 +531,7 @@ ACT.FX('coal_nele', '2020') = 10.7 ;
 ACT.FX('oil_nele', '2020') = 43.0 ;
 ACT.FX('gas_nele', '2020') = 18.7 ;
 ACT.FX('bio_nele', '2020') = 10.6 ;
-ACT.FX('Al_prod', '2020') = 0.065; 
+ACT.FX('Al_prod', '2020') = 0.075; 
 ACT.LO('other_nele', '2020') = 0.28 ;
 
 ACT.UP('coal_ppl', year_all) = 9.462 ;

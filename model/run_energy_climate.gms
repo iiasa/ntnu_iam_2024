@@ -66,6 +66,7 @@ EQ_MAP(t)..
 model energy_climate /
     EQ_INV_DEMAND
     EQ_ACT_DEMAND
+    EQ_TOT_DEMAND
     EQ_ENERGY_BALANCE
     EQ_CAPACITY_BALANCE
     EQ_EMISSION
@@ -97,7 +98,14 @@ model energy_climate /
     EQ_MAP
 / ;
 
-*TATM.UP(t)$(ORD(t) le 9) = 2 ;
+TATM.UP(t)$(ORD(t) le 9) = 2 ;
+
+* Specify the solver and options
+*Option NLP = IPOPT;
+* Set optimality criterion
+*Option OPTCR = 0.05;
+** Increase iteration limit
+*Option ITERLIM = 10000;  
 
 * solve model
 solve energy_climate using NLP minimize TOTAL_COST ;
@@ -106,5 +114,5 @@ solve energy_climate using NLP minimize TOTAL_COST ;
 * reporting
 * ------------------------------------------------------------------------------
 
-execute_unload "energy_climate_results_baseline.gdx"
+execute_unload "energy_climate_results_Al_end_2C.gdx"
 
