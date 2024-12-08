@@ -371,6 +371,7 @@ VARIABLES
     ACT(technology, year_all)       'technology acitvity in period year_all'
     CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
     EMISS(year_all)                 'CO2 emissions in period year_all'
+    EMISS_TECH(technology, year_all)'CO2 emissions by their source and over time'
     CUM_EMISS                       'cumulative CO2 emissions'
     TOTAL_COST                      'total discounted systems costs'
 ;
@@ -381,6 +382,7 @@ EQUATIONS
     EQ_ENERGY_BALANCE          'supply > demand equation for energy carrier and level combination'
     EQ_CAPACITY_BALANCE        'capacity equation for technologies'
     EQ_EMISSION                'summation of CO2 emissions'
+    EQ_EMISSION_TECH           'summation of CO2 within tech'
     EQ_EMISSION_CUMULATIVE     'cumulative CO2 emissions'
     EQ_DIFFUSION_UP            'upper technology capacity diffusion constraint'
     EQ_COST_ANNUAL             'costs per year_all'
@@ -410,6 +412,9 @@ $OFFTEXT
 
 EQ_EMISSION(year_all)..
     SUM(technology, ACT(technology, year_all) * CO2_emission(technology)) =E= EMISS(year_all) ;
+    
+EQ_EMISSION_TECH(technology, year_all)..
+    ACT(technology, year_all) * CO2_emission(technology) =E= EMISS_TECH(technology, year_all) ;
 
 EQ_EMISSION_CUMULATIVE..
     SUM(year_all, EMISS(year_all) * period_length) =E= CUM_EMISS ;
@@ -444,6 +449,7 @@ MODEL energy_model /
     EQ_ENERGY_BALANCE
     EQ_CAPACITY_BALANCE
     EQ_EMISSION
+    EQ_EMISSION_TECH
     EQ_EMISSION_CUMULATIVE
     EQ_DIFFUSION_UP
     EQ_COST_ANNUAL
@@ -477,7 +483,8 @@ ACT.FX('bio_nele', '2020') = 10.6 ;
 *ACT.FX('Al_prod', '2020') = 0.065; 
 ACT.LO('other_nele', '2020') = 0.28 ;
 
-*ACT.LO('coal_ppl', year_all) = 9.462 ;
+ACT.UP('coal_ppl', year_all) = 9.462 ;
+ACT.UP('hydro_ppl', year_all) = 10 ;
 
 $ONTEXT
 * ------------------------------------------------------------------------------

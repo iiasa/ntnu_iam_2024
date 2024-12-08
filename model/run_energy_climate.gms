@@ -67,6 +67,7 @@ model energy_climate /
     EQ_ENERGY_BALANCE
     EQ_CAPACITY_BALANCE
     EQ_EMISSION
+    EQ_EMISSION_TECH
     EQ_EMISSION_CUMULATIVE
     EQ_DIFFUSION_UP
     EQ_COST_ANNUAL
@@ -94,7 +95,7 @@ model energy_climate /
     EQ_MAP
 / ;
 
-*TATM.UP(t)$(ORD(t) le 9) = 1.8 ;
+TATM.UP(t)$(ORD(t) le 9) = 2 ;
 
 * solve model
 solve energy_climate using NLP minimize TOTAL_COST ;
@@ -103,5 +104,5 @@ solve energy_climate using NLP minimize TOTAL_COST ;
 * reporting
 * ------------------------------------------------------------------------------
 
-execute_unload "energy_climate_results_base.gdx"
+execute_unload "energy_climate_results_base_lim_coal_hydro_2degrees.gdx"
 
