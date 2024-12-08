@@ -212,7 +212,7 @@ PARAMETERS
     demand(energy, level)                    'demand in base year_all [PWh]/[Gt virgin Al]'
     / electricity.useful        22.60
       nonelectric.useful        87.3
-*      aluminum.final            0.065
+      aluminum.final            0.065
     /
 
     gdp(year_all)                                'GDP [index]'
@@ -480,7 +480,7 @@ ACT.FX('coal_nele', '2020') = 10.7 ;
 ACT.FX('oil_nele', '2020') = 43.0 ;
 ACT.FX('gas_nele', '2020') = 18.7 ;
 ACT.FX('bio_nele', '2020') = 10.6 ;
-*ACT.FX('Al_prod', '2020') = 0.065; 
+ACT.FX('Al_prod', '2020') = 0.065; 
 ACT.LO('other_nele', '2020') = 0.28 ;
 
 ACT.UP('coal_ppl', year_all) = 9.462 ;
