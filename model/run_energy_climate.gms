@@ -64,6 +64,8 @@ EQ_MAP(t)..
          E(t) =E= SUM(year_all$mapping(t,year_all), EMISS(year_all)) ;
 
 model energy_climate /
+    EQ_INV_DEMAND
+    EQ_ACT_DEMAND
     EQ_ENERGY_BALANCE
     EQ_CAPACITY_BALANCE
     EQ_EMISSION
@@ -104,5 +106,5 @@ solve energy_climate using NLP minimize TOTAL_COST ;
 * reporting
 * ------------------------------------------------------------------------------
 
-execute_unload "energy_climate_results_Al_lim_coal_hydro_2degrees.gdx"
+execute_unload "energy_climate_results_baseline.gdx"
 

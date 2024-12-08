@@ -212,7 +212,7 @@ PARAMETERS
     demand(energy, level)                    'demand in base year_all [PWh]/[Gt virgin Al]'
     / electricity.useful        22.60
       nonelectric.useful        87.3
-      aluminum.final            0.065
+*      aluminum.final            0.065
     /
 
     gdp(year_all)                                'GDP [index]'
@@ -252,17 +252,17 @@ TABLE
 ;
 
 TABLE
-    inv_Al(technology, year_all)                    'investment cost [kgAl/kW]'
-                            2020    2030    2040    2050    2060    2070    2080
-    coal_ppl                   1       1       1       1       1       1       1
-    gas_ppl                    1       1       1       1       1       1       1
-    oil_ppl                    1       1       1       1       1       1       1
-    hydro_ppl                  1       1       1       1       1       1       1
-    bio_ppl                    1       1       1       1       1       1       1
-    wind_ppl                   1       1       1       1       1       1       1
-    solar_PV_ppl               1       1       1       1       1       1       1
-    nuclear_ppl                1       1       1       1       1       1       1
-    other_ppl                  1       1       1       1       1       1       1
+    inv_Al(technology, energy, level)                    'investment cost [kgAl/kW]'
+                  aluminum.final
+    coal_ppl               0.001
+    gas_ppl                0.001
+    oil_ppl                0.001
+    hydro_ppl              0.001
+    bio_ppl                0.001
+    wind_ppl                 0.2
+    solar_PV_ppl              21
+    nuclear_ppl            0.001
+    other_ppl              0.001
 ;
 
 TABLE
@@ -368,6 +368,8 @@ DISPLAY cost, cost_capacity, cost_activity ;
 * definition of variables that are part of the optimization
 
 VARIABLES
+    INV_DEMAND(energy, level, year_all)
+    ACT_DEMAND(energy, level, year_all)
     ACT(technology, year_all)       'technology acitvity in period year_all'
     CAP_NEW(technology, year_all)   'new technology capacity built in period year_all'
     EMISS(year_all)                 'CO2 emissions in period year_all'
@@ -379,6 +381,8 @@ VARIABLES
 * declaration of equations
 
 EQUATIONS
+    EQ_INV_DEMAND
+    EQ_ACT_DEMAND
     EQ_ENERGY_BALANCE          'supply > demand equation for energy carrier and level combination'
     EQ_CAPACITY_BALANCE        'capacity equation for technologies'
     EQ_EMISSION                'summation of CO2 emissions'
@@ -397,6 +401,13 @@ EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
     SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
   - SUM(sector $ map_energy_sector(energy, level, sector), PHYSENE(sector, year_all)) =G= 0 ;
 $OFFTEXT
+EQ_INV_DEMAND(energy, level, year_all) $ energy_level(energy, level)..
+    sum(technology, 1e-6*CAP_NEW(technology, year_all)*inv_Al(technology, energy, level))
+    =E= INV_DEMAND(energy, level, year_all);
+
+EQ_ACT_DEMAND(energy, level, year_all) $ energy_level(energy, level)..
+    demand(energy, level) * (gdp(year_all)/gdp('2020'))**beta
+    =E= ACT_DEMAND(energy, level, year_all);
 
 EQ_ENERGY_BALANCE(energy, level, year_all) $ energy_level(energy, level)..
     SUM(technology, ACT(technology, year_all) * (output(technology, energy, level) - input(technology, energy, level)))
@@ -446,6 +457,8 @@ EQ_COST..
 * definition of model (keyword 'all' means that all equations defined above are part of the model)
 
 MODEL energy_model /
+*    EQ_INV_DEMAND
+    EQ_ACT_DEMAND
     EQ_ENERGY_BALANCE
     EQ_CAPACITY_BALANCE
     EQ_EMISSION
@@ -485,6 +498,7 @@ ACT.LO('other_nele', '2020') = 0.28 ;
 
 ACT.UP('coal_ppl', year_all) = 9.462 ;
 ACT.UP('hydro_ppl', year_all) = 10 ;
+ACT.LO('solar_PV_ppl', '2050') = 3;
 
 $ONTEXT
 * ------------------------------------------------------------------------------
