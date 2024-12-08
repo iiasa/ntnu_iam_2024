@@ -97,7 +97,7 @@ model energy_climate /
     EQ_MAP
 / ;
 
-TATM.UP(t)$(ORD(t) le 9) = 2 ;
+*TATM.UP(t)$(ORD(t) le 9) = 2 ;
 
 * solve model
 solve energy_climate using NLP minimize TOTAL_COST ;
